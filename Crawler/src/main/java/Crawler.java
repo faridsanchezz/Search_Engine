@@ -11,22 +11,14 @@ import java.util.Random;
 public class Crawler {
 
     public static void execute(int numOfBooks, String datalakeDirectory) throws IOException, InterruptedException {
-        // Crear directorio si no existe
+        
         Path datalakePath = Paths.get(datalakeDirectory);
-        if (!Files.exists(datalakePath)) {
-            Files.createDirectories(datalakePath);
-        }
-
         int counter = 0;
         Random random = new Random();
 
         while (counter < numOfBooks) {
-            int i = random.nextInt(60000) + 1; // Limitar el ID a libros válidos
+            int i = random.nextInt(99999);
             String urlString = "https://www.gutenberg.org/cache/epub/" + i + "/pg" + i + ".txt";
-
-            if (counter >= numOfBooks) {
-                break;
-            }
 
             try {
                 URL url = new URL(urlString);
@@ -41,7 +33,7 @@ public class Crawler {
                         continue;
                     }
 
-                    // Guardar el archivo
+                    // Saves the archive in the specified data lake path directory.
                     Path filePath = datalakePath.resolve(i + ".txt");
                     try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
                         writer.write(book);
@@ -52,8 +44,6 @@ public class Crawler {
                 } else {
                     System.out.println("Error while downloading archive " + i + ". State code: " + responseCode);
                 }
-
-                // Pausa para evitar sobrecargar el servidor
                 Thread.sleep(3000);
 
             } catch (IOException e) {
