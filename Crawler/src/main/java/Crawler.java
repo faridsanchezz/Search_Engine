@@ -7,48 +7,66 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Crawler {
 
-    public static void execute(int numOfBooks, String datalakeDirectory) throws IOException, InterruptedException {
-        
-        Path datalakePath = Paths.get(datalakeDirectory);
-        int counter = 0;
-        Random random = new Random();
+	public static void execute(int numOfBooks, String datalakeDirectory) throws IOException, InterruptedException {
 
-        while (counter < numOfBooks) {
-            int i = random.nextInt(99999);
-            String urlString = "https://www.gutenberg.org/cache/epub/" + i + "/pg" + i + ".txt";
+		Path datalakePath = Paths.get(datalakeDirectory);
+		ExecutorService executorService = Executors.newFixedThreadPool(5); // Pool de hilos, ajustable
+		Random random = new Random();
+		AtomicInteger booksDownloaded = new AtomicInteger(0); // Contador atómico de libros descargados exitosamente
 
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
+		while (booksDownloaded.get() < numOfBooks) {
+			int bookId = random.nextInt(99999);
+			String urlString = "https://www.gutenberg.org/cache/epub/" + bookId + "/pg" + bookId + ".txt";
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode == 200) {
-                    String book = new String(url.openStream().readAllBytes(), StandardCharsets.UTF_8);
-                    if (LanguageFilter.languageFilter(book)) {
-                        System.out.println("Error. Book " + i + " not in English, Spanish or French.");
-                        continue;
-                    }
+			executorService.execute(() -> {
+				boolean success = downloadBook(urlString, datalakePath, bookId);
+				if (success) {
+					booksDownloaded.incrementAndGet(); // Incrementa el contador de forma segura
+				}
+			});
 
-                    // Saves the archive in the specified data lake path directory.
-                    Path filePath = datalakePath.resolve(i + ".txt");
-                    try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-                        writer.write(book);
-                    }
+			// Esperamos un breve momento antes de intentar el próximo libro
+			Thread.sleep(500);
+		}
 
-                    System.out.println("Archive downloaded and saved in 'datalake' as '" + i + ".txt'");
-                    counter++;
-                } else {
-                    System.out.println("Error while downloading archive " + i + ". State code: " + responseCode);
-                }
-                Thread.sleep(3000);
+		executorService.shutdown();
+	}
 
-            } catch (IOException e) {
-                System.out.println("Error connecting to URL " + urlString + ": " + e.getMessage());
-            }
-        }
-    }
+	private static boolean downloadBook(String urlString, Path datalakePath, int bookId) {
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+
+			int responseCode = connection.getResponseCode();
+			if (responseCode == 200) {
+				String book = new String(url.openStream().readAllBytes(), StandardCharsets.UTF_8);
+				if (LanguageFilter.languageFilter(book)) {
+					System.out.println("Error. Book " + bookId + " not in English, Spanish or French.");
+					return false;
+				}
+
+				// Guardar el archivo en el directorio especificado del datalake
+				Path filePath = datalakePath.resolve(bookId + ".txt");
+				try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+					writer.write(book);
+				}
+
+				System.out.println("Archivo descargado y guardado en 'datalake' como '" + bookId + ".txt'");
+				return true;
+			} else {
+				System.out.println("Error al descargar el archivo " + bookId + ". Código de estado: " + responseCode);
+			}
+		} catch (IOException e) {
+			System.out.println("Error al conectar con la URL " + urlString + ": " + e.getMessage());
+		}
+		return false;
+	}
 }
+
