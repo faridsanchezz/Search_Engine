@@ -1,3 +1,8 @@
+package Main;
+
+import Control.MetaData;
+import Control.Word;
+import Control.WordOcurrence;
 
 import java.util.*;
 import java.io.*;
@@ -20,8 +25,8 @@ public class QueryEngine {
 
         JsonController jsonController = new JsonController();
 
-        Map<String, Map<String, Object>> wordsDatamart = jsonController.readJSON(wordsPath);
-        Map<String, Map<String, Object>> metadataDatamart = jsonController.readJSON(metadataPath);
+        Word wordsFromDatamart = jsonController.readJSON(wordsPath);
+        // MetaData metadataFromDatamart = jsonController.readJSON(metadataPath);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -38,8 +43,8 @@ public class QueryEngine {
             while (!words.isEmpty()) {
                 String word = words.remove(0);
                 System.out.println("buscando: " + word);
-                Map<String, Object> books = searchBook(wordsDatamart, word); // diccionario con todos los codigos de los libros
-                printResults(books, metadataDatamart, datalakePath);
+                //WordOcurrence books = searchBook(wordsFromDatamart, word); // diccionario con todos los codigos de los libros
+                //printResults(books, metadataFromDatamart, datalakePath);
             }
         }
     }
@@ -54,7 +59,7 @@ public class QueryEngine {
 
                 Object rawBookData = books.get(idBook);
                 Map<String, Object> bookData = (Map<String, Object>) rawBookData;
-                
+
                 // Casting
                 Double frequency = (Double) bookData.get("frecuency");
                 List<Double> rawLines = (List<Double>) bookData.get("lines");

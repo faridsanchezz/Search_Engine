@@ -1,3 +1,6 @@
+package Main;
+
+import Control.Word;
 import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +17,7 @@ public class JsonController implements JsonManager {
     }
 
     @Override
-    public Map<String, Map<String, Object>> readJSON(String filePath) {
+    public Word readJSON(String filePath) {
         HashMap<String, Map<String, Object>> content = new HashMap<>();
 
         try (Reader reader = new FileReader(filePath)) {
