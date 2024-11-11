@@ -4,24 +4,32 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Word {
-	private String text;  // Text of the word
-	private List<WordOccurrence> occurrences;  // List of WordOccurrence objects
+	private String text;
+	private Set<WordOccurrence> occurrences = new HashSet<>();
 
-	public Word(String text, WordOccurrence[] occurrences) {
+	public Word(String text, WordOccurrence occurrence) {
 		this.text = text;
-		this.occurrences = new ArrayList<>(Arrays.asList(occurrences));
+		this.occurrences.add(occurrence);
+	}
+
+	public Word(String text, Set<WordOccurrence> occurrences) {
+		this.text = text;
+		this.occurrences.addAll(occurrences);
 	}
 
 	public String getText() {
 		return text;
 	}
 
-	public WordOccurrence[] getOccurrences() {
-		return occurrences.toArray(new WordOccurrence[0]);
+	public Set<WordOccurrence> getOccurrences() {
+		return occurrences;
 	}
 
 	public void addOccurrence(WordOccurrence newOccurrence) {
 		occurrences.add(newOccurrence);
+	}
+	public void addOccurrence(Set<WordOccurrence> newOccurrences) {
+		occurrences.addAll(newOccurrences);
 	}
 
 	@Override
@@ -47,33 +55,52 @@ public class Word {
 	}
 
 	public static class WordOccurrence implements Serializable {
-		private final String book_id;
-		private final List<Integer> lineOccurrences;
-		private final int frequency;
+		private final String bookID;
+		private final Set<Integer> lines = new HashSet<>();
 
-		public WordOccurrence(String book_id, List<Integer> lineOccurrences) {
-			this.book_id = book_id;
-			this.lineOccurrences = lineOccurrences;
-			this.frequency = lineOccurrences.size();
+		public WordOccurrence(String bookID, Integer line) {
+			this.bookID = bookID;
+			this.lines.add(line);
 		}
 
-		public String getBook_id() {
-			return book_id;
+		public WordOccurrence(String bookID, Set<Integer> lines) {
+			this.bookID = bookID;
+			this.lines.addAll(lines);
 		}
 
-		public List<Integer> getLineOccurrences() {
-			return lineOccurrences;
+		public String getBookID() {
+			return bookID;
 		}
 
-		public int getFrequency() {
-			return frequency;
+		public Set<Integer> getLineOccurrences() {
+			return this.lines;
+		}
+
+		public void addLineOccurrence(Integer line) {
+			this.lines.add(line);
+		}
+		public void addLineOccurrence(Set<Integer> lines) {
+			this.lines.addAll(lines);
 		}
 
 		@Override
 		public String toString() {
-			return "Book ID: " + book_id + "\n" +
-					"Lines: " + lineOccurrences + "\n" +
-					"Frequency: " + frequency + "\n";
+			return "Book ID: " + bookID + "\n" +
+					"Lines: " + lines + "\n" +
+					"Frequency: " + lines.size() + "\n";
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null || getClass() != obj.getClass()) return false;
+			WordOccurrence that = (WordOccurrence) obj;
+			return Objects.equals(bookID, that.bookID);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(bookID);
 		}
 	}
 }

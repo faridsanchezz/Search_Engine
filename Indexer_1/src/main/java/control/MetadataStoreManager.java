@@ -5,50 +5,36 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Optional;
-import java.util.ArrayList;
 
-public class MetadataStoreManager {
-	private Set<Metadata> metadataSet;
+public class MetadataStoreManager implements StoreManager<Metadata>{
 	private final String filePath;
+	private Set<Metadata> metadataSetDatamart;
 
-	// Constructor que recibe la ruta del archivo de metadatos
 	public MetadataStoreManager(String filePath) throws IOException {
 		this.filePath = filePath;
-		loadDatamart();
 	}
 
-	// Método para cargar los metadatos desde el archivo o crear un nuevo archivo si no existe
-	private void loadDatamart() throws IOException {
+	@Override
+	public Set<Metadata> loadDatamart() throws IOException {
 		File file = new File(filePath);
 		if (file.exists()) {
-			// Si el archivo existe, cargar los metadatos
-			metadataSet = new HashSet<>(MetadataSerializer.deserialize(filePath));
+			return new HashSet<>(MetadataSerializer.deserialize(filePath));
 		} else {
-			// Si el archivo no existe, inicializar el conjunto de metadatos vacío y crear el archivo
-			System.out.println("El archivo de metadatos no existe. Creando un nuevo archivo.");
-			metadataSet = new HashSet<>();
-			saveDatamart();  // Guardar el archivo vacío
+			return new HashSet<>();
 		}
 	}
 
-	// Método para añadir nuevos metadatos si no existen previamente
-	public void addMetadata(Metadata newMetadata) throws IOException {
-		// Verificar si los metadatos ya existen utilizando el `book_id` como clave de identificación
-		boolean exists = metadataSet.stream()
-				.anyMatch(metadata -> metadata.getBook_id().equals(newMetadata.getBook_id()));
-
-		if (!exists) {
-			// Si no existe, añadir los metadatos
-			metadataSet.add(newMetadata);
-			saveDatamart();  // Guardar los cambios en el archivo
-		} else {
-			System.out.println("Los metadatos ya existen para el book_id: " + newMetadata.getBook_id());
-		}
+	@Override
+	public void saveDatamart() throws IOException {
+		MetadataSerializer.serialize(this.metadataSetDatamart, this.filePath);
 	}
+	@Override
+	public void update(Metadata new_metadata) throws IOException {
+		this.metadataSetDatamart = loadDatamart();
+		if (this.metadataSetDatamart.stream().noneMatch(m -> m.hashCode() == new_metadata.hashCode())) {
+			this.metadataSetDatamart.add(new_metadata);
+		}
 
-	// Método para guardar los metadatos en el archivo
-	private void saveDatamart() throws IOException {
-		MetadataSerializer.serialize(new ArrayList<>(this.metadataSet), this.filePath);
+		saveDatamart();
 	}
 }

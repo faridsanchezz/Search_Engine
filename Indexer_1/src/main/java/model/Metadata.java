@@ -4,15 +4,15 @@ import java.util.*;
 
 public class Metadata {
 
-	private final String book_id;
+	private final String bookID;
 	private final String name;
 	private final String author;
 	private final int year;
 	private final String language;
 	private final String downloadLink;
 
-	public Metadata(String book_id, String name, String author, int year, String language, String downloadLink) {
-		this.book_id = book_id;
+	public Metadata(String bookID, String name, String author, int year, String language, String downloadLink) {
+		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
 		this.year = year;
@@ -20,8 +20,8 @@ public class Metadata {
 		this.downloadLink = downloadLink;
 	}
 
-	public String getBook_id() {
-		return book_id;
+	public String getBookID() {
+		return bookID;
 	}
 
 	public String getName() {
@@ -46,7 +46,7 @@ public class Metadata {
 
 	@Override
 	public String toString() {
-		return book_id + "\n" +
+		return bookID + "\n" +
 				"    " + name + "\n" +
 				"    " + author + "\n" +
 				"   " + year + "\n" +
@@ -56,7 +56,7 @@ public class Metadata {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(book_id);
+		return Objects.hash(bookID);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class Metadata {
 		if (this == obj) return true;
 		if (obj == null || getClass() != obj.getClass()) return false;
 		Metadata other = (Metadata) obj;
-		return Objects.equals(book_id, other.book_id);
+		return Objects.equals(bookID, other.bookID);
 	}
 
 }
