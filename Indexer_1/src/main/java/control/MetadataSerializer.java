@@ -1,33 +1,34 @@
 package control;
 
 import model.Metadata;
+
 import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MetadataSerializer {
 
-	// Método de serialización para sobrescribir completamente el archivo con un conjunto de objetos Metadata
 	public static void serialize(Collection<Metadata> metadataSet, String filePath) throws IOException {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {  // Sobrescribir archivo
 			for (Metadata metadata : metadataSet) {
-				writer.write(metadata.getBook_id());
+				writer.write(metadata.getBookID());
 				writer.newLine();
 				writer.write("  " + metadata.getName());
 				writer.newLine();
 				writer.write("  " + metadata.getAuthor());
 				writer.newLine();
-				writer.write("  " + metadata.getYear());  // Año con sangría
+				writer.write("  " + metadata.getYear());
 				writer.newLine();
-				writer.write("  " + metadata.getLanguage());  // Idioma con sangría
+				writer.write("  " + metadata.getLanguage());
 				writer.newLine();
-				writer.write("  " + metadata.getDownloadLink());  // Enlace de descarga con sangría
+				writer.write("  " + metadata.getDownloadLink());
 				writer.newLine();
-				writer.newLine();  // Línea en blanco para separar entradas
+				writer.newLine();
 			}
 		}
 	}
 
-	// Método de deserialización para leer múltiples objetos Metadata desde un archivo
 	public static Collection<Metadata> deserialize(String filePath) throws IOException {
 		Set<Metadata> metadataSet = new HashSet<>();
 
@@ -40,9 +41,8 @@ public class MetadataSerializer {
 				line = line.trim();
 
 				if (line.isEmpty() && book_id != null) {
-					// Fin de una entrada, añadirla al conjunto
 					metadataSet.add(new Metadata(book_id, name, author, year, language, downloadLink));
-					book_id = name = author = language = downloadLink = null;  // Reiniciar campos para la próxima entrada
+					book_id = name = author = language = downloadLink = null;
 					year = 0;
 				} else if (book_id == null) {
 					book_id = line;
@@ -59,7 +59,6 @@ public class MetadataSerializer {
 				}
 			}
 
-			// Añadir la última entrada después de salir del bucle, si existe alguna
 			if (book_id != null) {
 				metadataSet.add(new Metadata(book_id, name, author, year, language, downloadLink));
 			}
