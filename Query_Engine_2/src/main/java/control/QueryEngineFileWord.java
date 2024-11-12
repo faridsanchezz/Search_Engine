@@ -23,7 +23,7 @@ public class QueryEngineFileWord implements QueryEngineManager{
         List<Word.WordOccurrence> occurrences = new ArrayList<>();
 
         if (!wordFile.exists()) {
-            System.out.println("No se encontró un archivo para la palabra: " + word);
+            System.out.println("No file found for the word: " + word);
             return new Word(word, new Word.WordOccurrence[0]);  // Devuelve un Word vacío si el archivo no existe
         }
 
