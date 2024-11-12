@@ -5,6 +5,8 @@ import model.Word;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static control.MetadataReader.readMetadata;
@@ -12,41 +14,45 @@ import static control.MetadataReader.readMetadata;
 public class QueryEngineOneFile implements QueryEngineManager, FileManager{
 
     @Override
-    public Set<Word> readFile(String fileName) {
-        File wordFile = new File(fileName);
-        Set<Word> words = new HashSet<>();
+    public  Set<Word> readFile(String filePath) {
+        Set<Word> wordSet = new HashSet<>();
+        Pattern linePattern = Pattern.compile("-\\s(\\d+)\\s([\\d\\s]+)");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(wordFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
+            Word currentWord = null;
+
             while ((line = reader.readLine()) != null) {
-                if (!line.startsWith("-")) { // MIRAR SALTO DE LINEA
-                    // Si es una nueva palabra y la línea siguiente empieza con "-", crea un nuevo Word
-                    String wordText = line.trim();
-                    List<Word.WordOccurrence> occurrences = new ArrayList<>();
-                    while ((line = reader.readLine()) != null && !line.trim().isEmpty()) {
-                        String[] parts = line.split(" ");
-                        if (parts.length > 1) {
-                            String bookId = String.valueOf(Integer.parseInt(parts[1])); // Primer elemento es el BookID
-                            List<Integer> lineNumbers = new ArrayList<>();
-
-                            // Agregar cada número de línea a la lista
-                            for (int i = 2; i < parts.length; i++) {
-                                lineNumbers.add(Integer.parseInt(parts[i]));
-                            }
-
-                            // Crear un WordOccurrence y agregarlo a la lista de ocurrencias
-                            occurrences.add(new Word.WordOccurrence(bookId, lineNumbers));
-                        }
+                // Check if the line is a word (not starting with '-')
+                if (!line.startsWith("-")) {
+                    if (currentWord != null) {
+                        wordSet.add(currentWord);
                     }
-                    if (!occurrences.isEmpty()) {
-                        words.add(new Word(wordText, occurrences));
+                    currentWord = new Word(line.trim(), new ArrayList<>());
+                } else if (currentWord != null) {
+                    // If the line starts with '-' and we have a current word, parse occurrences
+                    Matcher matcher = linePattern.matcher(line.trim());
+                    if (matcher.matches()) {
+                        String bookId = matcher.group(1);
+                        List<Integer> lineOccurrences = new ArrayList<>();
+                        for (String part : matcher.group(2).split("\\s")) {
+                            lineOccurrences.add(Integer.parseInt(part));
+                        }
+                        Word.WordOccurrence occurrence = new Word.WordOccurrence(bookId, lineOccurrences);
+                        currentWord.addOccurrence(occurrence);
                     }
                 }
             }
+            // Add the last word processed to the set
+            if (currentWord != null) {
+                wordSet.add(currentWord);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return words;
+
+        return wordSet;
     }
 
     @Override

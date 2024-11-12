@@ -12,9 +12,9 @@ import java.util.*;
 @RestController
 public class BookController {
 
-    private static final String WORDS_DATAMART_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datamart\\Words";
-    private static final String DATALAKE_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datalake";
-    private static final String METADATA_FILE_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datamart\\Metadatos\\metada";
+    private static final String WORDS_DATAMART_PATH = "Query_Engine_1\\Datamart\\Words\\words";
+    private static final String DATALAKE_PATH = "Query_Engine_1\\Datalake";
+    private static final String METADATA_FILE_PATH = "Query_Engine_1\\Datamart\\Metadatos\\metada";
 
     @GetMapping("/search")
     public Map<String, Object> searchWords(@RequestParam String phrase) {
