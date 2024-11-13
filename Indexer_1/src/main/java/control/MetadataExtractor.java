@@ -1,15 +1,19 @@
 package control;
 
+import control.interfaces.ExtractorController;
 import model.Metadata;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MetadataExtractor {
+public class MetadataExtractor implements ExtractorController<Metadata> {
 
-	public static Metadata getMetadata(BufferedReader book, String bookPath) throws IOException {
+	@Override
+	public Set<Metadata> get(BufferedReader book, String bookPath) throws IOException {
 		StringBuilder inputString = new StringBuilder();
 
 		for (int i = 0; i < 30; i++) {
@@ -35,11 +39,15 @@ public class MetadataExtractor {
 		String title = titleMatcher.find() ? titleMatcher.group(1).trim() : null;
 		String author = authorMatcher.find() ? authorMatcher.group(1).trim() : null;
 		String language = languageMatcher.find() ? languageMatcher.group(1).trim() : null;
-		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : null; //TODO: añadir este caracteristica a METADATA
+		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : null;
 		String downloadLink = "https://www.gutenberg.org/cache/epub/" + bookID + "/pg" + bookID + ".txt";
-		int year = 0;
+		String year = "2024";
 
-		return new Metadata(bookID, title, author, year, language, downloadLink);
+		Metadata metadata = new Metadata(bookID, title, author, year, language, downloadLink);
+
+		Set<Metadata> metadataSet = new HashSet<>();
+		metadataSet.add(metadata);
+
+		return metadataSet;
 	}
-
 }

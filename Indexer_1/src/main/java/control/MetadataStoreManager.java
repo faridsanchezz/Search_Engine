@@ -1,12 +1,13 @@
 package control;
 
+import control.interfaces.StoreManager;
 import model.Metadata;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MetadataStoreManager implements StoreManager<Metadata>{
+public class MetadataStoreManager implements StoreManager<Metadata> {
 	private final String filePath;
 	private Set<Metadata> metadataSetDatamart;
 

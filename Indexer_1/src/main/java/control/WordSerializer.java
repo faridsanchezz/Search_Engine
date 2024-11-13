@@ -1,14 +1,22 @@
 package control;
 
+import control.interfaces.SerializerController;
 import model.Word;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-public class WordSerializer {
+public class WordSerializer implements SerializerController<Word> {
+	private final String datamartPath;
 
-	public static void serialize(Set<Word> words, String filePath) throws IOException {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
+	public WordSerializer(String datamartPath) {
+		this.datamartPath = datamartPath;
+	}
+
+	@Override
+	public void serialize(Set<Word> words) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.datamartPath, false))) {
 			for (Word word : words) {
 
 				writer.write(word.getText());
@@ -23,13 +31,16 @@ public class WordSerializer {
 				}
 				writer.newLine();
 			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	public static Set<Word> deserialize(String filePath) throws IOException {
+	@Override
+	public Set<Word> deserialize() {
 		Set<Word> words = new HashSet<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(this.datamartPath))) {
 			String line;
 			String wordText = null;
 			Set<Word.WordOccurrence> wordOccurrences = new HashSet<>();
@@ -64,6 +75,10 @@ public class WordSerializer {
 				Word word = new Word(wordText, new HashSet<>(wordOccurrences));
 				words.add(word);
 			}
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 
 		return words;

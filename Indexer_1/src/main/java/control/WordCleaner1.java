@@ -1,12 +1,14 @@
 package control;
 
+import control.interfaces.WordCleaner;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordCleaner {
+public class WordCleaner1 implements WordCleaner {
 
-	private static final Set<String> stopwords = new HashSet<>(Arrays.asList(
+	private final Set<String> stopwords = new HashSet<>(Arrays.asList(
 			// Stopwords in Spanish, English, and French
 			"el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "a", "al", "con", "sin", "por", "para",
 			"en", "entre", "sobre", "hasta", "ante", "bajo", "desde", "hacia", "durante", "mediante", "tras", "excepto",
@@ -24,7 +26,11 @@ public class WordCleaner {
 			"vous", "ils", "elles", "ll"
 	));
 
-	public static String execute(String word) {
+	public WordCleaner1() {
+	}
+
+	@Override
+	public String execute(String word) {
 		word = word.toLowerCase();
 
 		word = word.replaceAll("https?://\\S+|www\\.[^\\s]+", "");
@@ -35,11 +41,10 @@ public class WordCleaner {
 
 		if (!stopwords.contains(word) && word.length() > 1) {
 			return word;
-		}else{
+		} else {
 			return null;
 		}
 	}
-
 
 
 }

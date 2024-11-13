@@ -1,5 +1,12 @@
 package control;
 
+import control.interfaces.ExtractorController;
+import control.interfaces.SerializerController;
+import control.interfaces.StoreManager;
+import control.interfaces.WordCleaner;
+import model.Metadata;
+import model.Word;
+
 import java.io.IOException;
 
 public class Main {
@@ -7,18 +14,22 @@ public class Main {
 
 		String wordsDatamart = "words.txt";
 		String metadataDatamart = "metadata.txt";
-		String datalake = "";
+		String datalake = "/Users/faridsanchez/Desktop/datalakeV1";
 
-		WordStoreManager wordStoreManager = new WordStoreManager(wordsDatamart);
-		MetadataStoreManager metadataStoreManager = new MetadataStoreManager(metadataDatamart);
+		SerializerController<Word> wordSerializer = new WordSerializer(wordsDatamart);
+		SerializerController<Metadata> metadataSerializer = new MetadataSerializer(metadataDatamart);
 
-		try {
-			IndexerV1 indexerV1 = new IndexerV1(datalake, wordStoreManager, metadataStoreManager);
-			indexerV1.execute();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		StoreManager<Word> wordStoreManager = new WordStoreManager(wordsDatamart, wordSerializer);
+		StoreManager<Metadata> metadataStoreManager = new MetadataStoreManager(metadataDatamart, metadataSerializer);
 
+		WordCleaner wordCleaner = new WordCleaner1();
+		ExtractorController<Metadata> metadataExtractor = new MetadataExtractor();
+		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
+
+		IndexerV1 indexerV1 = new IndexerV1(wordStoreManager, metadataStoreManager, metadataExtractor, wordExtractor);
+
+		EventsWatcher eventsWatcher = new EventsWatcher(datalake, indexerV1);
+		eventsWatcher.startMonitoring();
 
 	}
 }
