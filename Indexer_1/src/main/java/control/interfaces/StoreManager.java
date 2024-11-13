@@ -1,4 +1,4 @@
-package control;
+package control.interfaces;
 
 import java.io.IOException;
 import java.util.Set;
