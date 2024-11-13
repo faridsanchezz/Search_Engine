@@ -1,7 +1,8 @@
 package control;
+
 import interfaces.CrawlerController;
 import interfaces.Downloader;
-import interfaces.Filter;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Random;
@@ -11,11 +12,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WebCrawlerController implements CrawlerController {
 	private final Downloader downloader;
-	private final Filter filter;
 
-	public WebCrawlerController(Downloader downloader, Filter filter) {
+	public WebCrawlerController(Downloader downloader) {
 		this.downloader = downloader;
-		this.filter = filter;
 	}
 
 	@Override

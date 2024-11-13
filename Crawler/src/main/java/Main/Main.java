@@ -5,18 +5,15 @@ import control.WebCrawlerController;
 import interfaces.CrawlerController;
 import interfaces.Downloader;
 import interfaces.Filter;
-
 import java.io.IOException;
-
 public class Main {
 
 	public static void main(String[] args) {
 		String datalakePath = "/Users/nestoruniversidad/Desktop/test";
 		int numBooks = 5;
-
-		Downloader downloader = new BookDownloader();
 		Filter filter = new LanguageFilter();
-		CrawlerController controller = new WebCrawlerController(downloader, filter);
+		Downloader downloader = new BookDownloader(filter);
+		CrawlerController controller = new WebCrawlerController(downloader);
 
 		try {
 			controller.execute(numBooks, datalakePath);
