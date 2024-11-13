@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static control.MetadataReader.readMetadata;
@@ -51,6 +52,8 @@ public class QueryEngineFileWord implements QueryEngineManager{
         List<String> previewLines = new ArrayList<>();
         String bookPath = datalakePath + File.separator + idBook + ".txt";
         File file = new File(bookPath);
+        String startPattern = "\\*\\*\\* START .* \\*\\*\\*";
+        boolean startReading = false;
 
         if (!file.exists()) {
             previewLines.add("File " + idBook + " not found.");
@@ -58,25 +61,33 @@ public class QueryEngineFileWord implements QueryEngineManager{
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String lineContent;
-            int currentLineNumber = 0;
+            String line;
+            int lineNumber = 0;
             int printedLines = 0;
 
-            while ((lineContent = reader.readLine()) != null) {
-                currentLineNumber++;
-                if (lines.contains(currentLineNumber) && printedLines < 3) {
-                    previewLines.add("Line " + currentLineNumber + ": " + lineContent.trim());
-                    printedLines++;
+            while ((line = reader.readLine()) != null) {
+                if (!startReading) {
+                    if (Pattern.matches(startPattern, line)) {
+                        startReading = true;
+                    }
+                    continue;
                 }
 
-                if (printedLines >= 3) {
-                    break;
+                if (startReading) {
+                    if (lines.contains(lineNumber)) {
+                        previewLines.add("Line " + lineNumber + ": " + line.trim());
+                        printedLines++;
+
+                        if (printedLines >= 3 || printedLines >= lines.size()) {
+                            break;
+                        }
+                    }
+                    lineNumber++; // Incrementa solo después de procesar la primera línea
                 }
             }
         } catch (IOException e) {
             previewLines.add("Error reading file: " + e.getMessage());
         }
-
         return previewLines;
     }
 

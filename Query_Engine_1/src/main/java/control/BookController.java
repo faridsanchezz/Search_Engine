@@ -16,9 +16,9 @@ import java.util.concurrent.Future;
 @RestController
 public class BookController {
 
-    private static final String WORDS_DATAMART_PATH = "Query_Engine_1\\Datamart\\Words\\words";
-    private static final String DATALAKE_PATH = "Query_Engine_1\\Datalake";
-    private static final String METADATA_FILE_PATH = "Query_Engine_1\\Datamart\\Metadatos\\metada";
+    private static final String WORDS_DATAMART_PATH = "words.txt";
+    private static final String DATALAKE_PATH = "datalake\\";
+    private static final String METADATA_FILE_PATH = "metadata.txt";
 
     @GetMapping("/search")
     public Map<String, Object> searchWords(@RequestParam String phrase) {

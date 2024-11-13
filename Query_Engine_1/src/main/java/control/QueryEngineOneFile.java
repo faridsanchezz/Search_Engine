@@ -68,6 +68,8 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager{
         List<String> previewLines = new ArrayList<>();
         String bookPath = datalakePath + File.separator + idBook + ".txt";
         File file = new File(bookPath);
+        String startPattern = "\\*\\*\\* START .* \\*\\*\\*";
+        boolean startReading = false;
 
         if (!file.exists()) {
             previewLines.add("File " + idBook + " not found.");
@@ -75,27 +77,36 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager{
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String lineContent;
-            int currentLineNumber = 0;
+            String line;
+            int lineNumber = 0;
             int printedLines = 0;
 
-            while ((lineContent = reader.readLine()) != null) {
-                currentLineNumber++;
-                if (lines.contains(currentLineNumber) && printedLines < 3) {
-                    previewLines.add("Line " + currentLineNumber + ": " + lineContent.trim());
-                    printedLines++;
+            while ((line = reader.readLine()) != null) {
+                if (!startReading) {
+                    if (Pattern.matches(startPattern, line)) {
+                        startReading = true;
+                    }
+                    continue;
                 }
 
-                if (printedLines >= 3) {
-                    break;
+                if (startReading) {
+                    if (lines.contains(lineNumber)) {
+                        previewLines.add("Line " + lineNumber + ": " + line.trim());
+                        printedLines++;
+
+                        if (printedLines >= 3 || printedLines >= lines.size()) {
+                            break;
+                        }
+                    }
+                    lineNumber++;
                 }
             }
         } catch (IOException e) {
             previewLines.add("Error reading file: " + e.getMessage());
         }
-
         return previewLines;
     }
+
 
     @Override
     public Map<String, Object> printResultsAsMap(Set<Word> wordsDatamart, String datalakePath, String metadataFilePath, String word) {
