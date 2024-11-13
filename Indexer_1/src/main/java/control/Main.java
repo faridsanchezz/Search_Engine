@@ -14,7 +14,7 @@ public class Main {
 
 		String wordsDatamart = "words.txt";
 		String metadataDatamart = "metadata.txt";
-		String datalake = "/Users/faridsanchez/Desktop/datalakeV1";
+		String datalake = "";
 
 		SerializerController<Word> wordSerializer = new WordSerializer(wordsDatamart);
 		SerializerController<Metadata> metadataSerializer = new MetadataSerializer(metadataDatamart);
