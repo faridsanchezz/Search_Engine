@@ -7,11 +7,11 @@ public class Metadata {
 	private final String bookID;
 	private final String name;
 	private final String author;
-	private final int year;
+	private final String year;
 	private final String language;
 	private final String downloadLink;
 
-	public Metadata(String bookID, String name, String author, int year, String language, String downloadLink) {
+	public Metadata(String bookID, String name, String author, String year, String language, String downloadLink) {
 		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
@@ -32,7 +32,7 @@ public class Metadata {
 		return author;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
