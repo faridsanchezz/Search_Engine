@@ -1,16 +1,23 @@
 package control;
 
+import control.interfaces.SerializerController;
 import model.Metadata;
 
 import java.io.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MetadataSerializer {
+public class MetadataSerializer implements SerializerController<Metadata> {
+	private final String datamartPath;
 
-	public static void serialize(Collection<Metadata> metadataSet, String filePath) throws IOException {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {  // Sobrescribir archivo
+	public MetadataSerializer(String datamartPath) {
+
+		this.datamartPath = datamartPath;
+	}
+
+	@Override
+	public void serialize(Set<Metadata> metadataSet) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.datamartPath, false))) {
 			for (Metadata metadata : metadataSet) {
 				writer.write(metadata.getBookID());
 				writer.newLine();
@@ -26,32 +33,33 @@ public class MetadataSerializer {
 				writer.newLine();
 				writer.newLine();
 			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	public static Collection<Metadata> deserialize(String filePath) throws IOException {
+	@Override
+	public Set<Metadata> deserialize() {
 		Set<Metadata> metadataSet = new HashSet<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(this.datamartPath))) {
 			String line;
-			String book_id = null, name = null, author = null, language = null, downloadLink = null;
-			int year = 0;
+			String book_id = null, name = null, author = null, language = null, downloadLink = null, year = null;
 
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 
 				if (line.isEmpty() && book_id != null) {
 					metadataSet.add(new Metadata(book_id, name, author, year, language, downloadLink));
-					book_id = name = author = language = downloadLink = null;
-					year = 0;
+					book_id = name = author = language = downloadLink = year = null;
 				} else if (book_id == null) {
 					book_id = line;
 				} else if (name == null) {
 					name = line;
 				} else if (author == null) {
 					author = line;
-				} else if (year == 0) {
-					year = Integer.parseInt(line.trim());
+				} else if (year == null) {
+					year = line;
 				} else if (language == null) {
 					language = line;
 				} else if (downloadLink == null) {
@@ -62,6 +70,10 @@ public class MetadataSerializer {
 			if (book_id != null) {
 				metadataSet.add(new Metadata(book_id, name, author, year, language, downloadLink));
 			}
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 
 		return metadataSet;

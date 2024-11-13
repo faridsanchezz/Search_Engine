@@ -14,6 +14,7 @@
         <module>Indexer_2</module>
         <module>Query_Engine_1</module>
         <module>Query_Engine_2</module>
+        <module>User_Interface</module>
     </modules>
 
     <properties>

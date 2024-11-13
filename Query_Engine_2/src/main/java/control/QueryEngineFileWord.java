@@ -3,14 +3,11 @@ package control;
 import model.Metadata;
 import model.Word;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static control.MetadataReader.readMetadata;
@@ -20,36 +17,34 @@ public class QueryEngineFileWord implements QueryEngineManager{
     @Override
     public Word searchBook(String wordsDatamartPath, String word) {
         File wordFile = new File(wordsDatamartPath, word);
-        List<Word.WordOccurrence> occurrences = new ArrayList<>();
 
         if (!wordFile.exists()) {
-            System.out.println("No se encontró un archivo para la palabra: " + word);
+            System.out.println("\n" + "No file found for the word: " + word);
             return new Word(word, new Word.WordOccurrence[0]);  // Devuelve un Word vacío si el archivo no existe
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(wordFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if (parts.length > 1) {
-                    String bookId = String.valueOf(Integer.parseInt(parts[0])); // Primer elemento es el BookID
-                    List<Integer> lineNumbers = new ArrayList<>();
+            // Usamos Stream para procesar cada línea y mapearla a una lista de WordOccurrence
+            List<Word.WordOccurrence> occurrences = reader.lines()
+                    .map(line -> line.split(" "))
+                    .filter(parts -> parts.length > 1)
+                    .map(parts -> {
+                        String bookId = String.valueOf(Integer.parseInt(parts[0]));
+                        List<Integer> lineNumbers = Arrays.stream(parts, 1, parts.length)
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList());
+                        return new Word.WordOccurrence(bookId, lineNumbers);
+                    })
+                    .collect(Collectors.toList());
 
-                    // Agregar cada número de línea a la lista
-                    for (int i = 1; i < parts.length; i++) {
-                        lineNumbers.add(Integer.parseInt(parts[i]));
-                    }
+            return new Word(word, occurrences.toArray(new Word.WordOccurrence[0]));
 
-                    // Crear un WordOccurrence y agregarlo a la lista de ocurrencias
-                    occurrences.add(new Word.WordOccurrence(bookId, lineNumbers));
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
+            return new Word(word, new Word.WordOccurrence[0]);  // Devuelve un Word vacío en caso de error
         }
-
-        return new Word(word, occurrences.toArray(new Word.WordOccurrence[0]));
     }
+
 
     @Override
     public List<String> getPreviewLines(String datalakePath, String idBook, List<Integer> lines) {
