@@ -1,5 +1,4 @@
 package control;
-
 import control.interfaces.ExtractorController;
 import control.interfaces.SerializerController;
 import control.interfaces.StoreManager;
