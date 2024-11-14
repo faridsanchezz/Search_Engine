@@ -1,0 +1,2 @@
+public class BenchmarkQueryEngine2 {
+}
