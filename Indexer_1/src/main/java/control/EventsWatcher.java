@@ -5,28 +5,20 @@ import java.nio.file.*;
 
 public class EventsWatcher {
 
-	private final Path directoryPath;
+	private final Path datalakeDirectory;
 	private final WatchService watchService;
 	private final IndexerV1 indexerV1;
 
-	public EventsWatcher(String directoryPath, IndexerV1 indexerV1) throws IOException {
-		this.directoryPath = Paths.get(directoryPath);
+	public EventsWatcher(String datalakeDirectory, IndexerV1 indexerV1) throws IOException {
+		this.datalakeDirectory = Paths.get(datalakeDirectory);
+		DirectoryManager.createDirectory(datalakeDirectory);
 		this.indexerV1 = indexerV1;
-
-		// Ensure the directory exists; create it if it doesn't
-		if (!Files.exists(this.directoryPath)) {
-			Files.createDirectories(this.directoryPath);
-			System.out.println("Directory created: " + this.directoryPath);
-		} else {
-			System.out.println("Directory already exists: " + this.directoryPath);
-		}
-
 		this.watchService = FileSystems.getDefault().newWatchService();
-		this.directoryPath.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+		this.datalakeDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 	}
 
 	public void startMonitoring() {
-		System.out.println("Monitoring directory: " + directoryPath);
+		System.out.println("Monitoring directory: " + datalakeDirectory);
 
 		while (true) {
 			WatchKey key;
@@ -47,7 +39,7 @@ public class EventsWatcher {
 
 				WatchEvent<Path> ev = (WatchEvent<Path>) event;
 				Path fileName = ev.context();
-				Path filePath = directoryPath.resolve(fileName);
+				Path filePath = datalakeDirectory.resolve(fileName);
 
 				if (kind == StandardWatchEventKinds.ENTRY_CREATE && fileName.toString().endsWith(".txt")) {
 					System.out.println("New .txt file detected: " + filePath);
@@ -66,7 +58,7 @@ public class EventsWatcher {
 	private void onTxtFileDetected(Path filePath) {
 		System.out.println("Processing the new .txt file: " + filePath);
 		try {
-			indexerV1.execute(String.valueOf(filePath));
+			indexerV1.execute(filePath);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

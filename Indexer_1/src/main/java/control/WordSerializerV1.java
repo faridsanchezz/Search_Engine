@@ -7,18 +7,16 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordSerializer implements SerializerController<Word> {
-	private final String datamartPath;
+public class WordSerializerV1 implements SerializerController<Word> {
 
-	public WordSerializer(String datamartPath) {
-		this.datamartPath = datamartPath;
+	public WordSerializerV1() {
+
 	}
 
 	@Override
-	public void serialize(Set<Word> words) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.datamartPath, false))) {
+	public void serialize(String datamartFile,Set<Word> words) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(datamartFile, false))) {
 			for (Word word : words) {
-
 				writer.write(word.getText());
 				writer.newLine();
 
@@ -37,10 +35,10 @@ public class WordSerializer implements SerializerController<Word> {
 	}
 
 	@Override
-	public Set<Word> deserialize() {
+	public Set<Word> deserialize(String datamartFile) {
 		Set<Word> words = new HashSet<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(this.datamartPath))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(datamartFile))) {
 			String line;
 			String wordText = null;
 			Set<Word.WordOccurrence> wordOccurrences = new HashSet<>();
@@ -76,7 +74,7 @@ public class WordSerializer implements SerializerController<Word> {
 				words.add(word);
 			}
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			return words;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

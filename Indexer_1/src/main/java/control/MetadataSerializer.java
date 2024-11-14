@@ -8,16 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MetadataSerializer implements SerializerController<Metadata> {
-	private final String datamartPath;
-
-	public MetadataSerializer(String datamartPath) {
-
-		this.datamartPath = datamartPath;
-	}
 
 	@Override
-	public void serialize(Set<Metadata> metadataSet) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.datamartPath, false))) {
+	public void serialize(String metadataDatamartFile,Set<Metadata> metadataSet) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(metadataDatamartFile, false))) {
 			for (Metadata metadata : metadataSet) {
 				writer.write(metadata.getBookID());
 				writer.newLine();
@@ -39,10 +33,10 @@ public class MetadataSerializer implements SerializerController<Metadata> {
 	}
 
 	@Override
-	public Set<Metadata> deserialize() {
+	public Set<Metadata> deserialize(String metadataDatamartFile) {
 		Set<Metadata> metadataSet = new HashSet<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(this.datamartPath))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(metadataDatamartFile))) {
 			String line;
 			String book_id = null, name = null, author = null, language = null, downloadLink = null, year = null;
 
@@ -71,7 +65,7 @@ public class MetadataSerializer implements SerializerController<Metadata> {
 				metadataSet.add(new Metadata(book_id, name, author, year, language, downloadLink));
 			}
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			return metadataSet;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -8,6 +8,8 @@ import model.Word;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 
@@ -27,13 +29,13 @@ public class IndexerV1 {
 		this.wordExtractor = wordExtractor;
 	}
 
-	public void execute(String bookPath) throws IOException {
+	public void execute(Path bookDatalakePath) throws IOException {
 		Set<Metadata> metadataBook;
 		Set<Word> wordSet;
 
-		try (BufferedReader book = new BufferedReader(new FileReader(bookPath))) {
+		try (BufferedReader book = new BufferedReader(new FileReader(bookDatalakePath.toFile()))) {
 			book.mark(5 * 1024 * 1024);
-			metadataBook = metadataExtractor.get(book, bookPath);
+			metadataBook = metadataExtractor.get(book, bookDatalakePath.getFileName().toString());
 			metadataStoreManager.update(metadataBook.iterator().next());
 			book.reset();
 			wordSet = wordExtractor.get(book, metadataBook.iterator().next().getBookID());

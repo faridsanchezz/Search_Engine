@@ -6,34 +6,24 @@ import model.Word;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordStoreManager implements StoreManager<Word> {
-	private final String datamartPath;
+public class WordStoreManagerV1 implements StoreManager<Word> {
 	private final SerializerController<Word> wordSerializer;
 	private Set<Word> datamartSetWords;
+	private final String datamartFilePath;
 
 
-	public WordStoreManager(String datamartPath, SerializerController<Word> wordSerializer) throws IOException {
-		this.datamartPath = datamartPath;
+	public WordStoreManagerV1(String datamartDirectory, SerializerController<Word> wordSerializer) throws IOException {
 		this.wordSerializer = wordSerializer;
-	}
-
-	@Override
-	public Set<Word> loadDatamart() throws IOException {
-		File file = new File(this.datamartPath);
-		if (file.exists()) {
-			return wordSerializer.deserialize();
-		} else {
-			System.out.println("Creating Words Datamart");
-			return new HashSet<>();
-		}
+		this.datamartFilePath = Paths.get(datamartDirectory, "words.txt").toString();
 	}
 
 	@Override
 	public void update(Word new_word) throws IOException {
-		this.datamartSetWords = loadDatamart();
+		this.datamartSetWords = wordSerializer.deserialize(this.datamartFilePath);
 		Word targetWord = datamartSetWords.stream()
 				.filter(w -> w.hashCode() == new_word.hashCode())
 				.findFirst()
@@ -44,12 +34,6 @@ public class WordStoreManager implements StoreManager<Word> {
 			datamartSetWords.add(new_word);
 		}
 
-		saveDatamart();
-	}
-
-
-	@Override
-	public void saveDatamart() throws IOException {
-		wordSerializer.serialize(this.datamartSetWords);
+		wordSerializer.serialize(this.datamartFilePath, this.datamartSetWords);
 	}
 }
