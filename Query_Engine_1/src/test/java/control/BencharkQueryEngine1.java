@@ -10,21 +10,30 @@ public class BencharkQueryEngine1 {
 
     @Setup(Level.Trial)
     public void setUp() {
-        // Inicializar manualmente el controlador
+
         bookController = new BookController();
     }
 
-    // Varias frases de prueba para simular distintas consultas
-    //@Param({
-    //        "simple search query",
-    //        "complex phrase with multiple words",
-    //        "testing search with special characters",
-    //        "another example search query",
-    //        "short query"
-    //})
-    //private String test_phrase;
+    @Param({
+            "typographical",
+            "latitude",
+            "good wooed",
+            "stop cruelty",
+            "antonio want salary",
+            "perfect avais filippo",
+            "pretend immenses caserne pire",
+            "information going fontana highbred",
+            "gold pick rome picture siffle",
+            "swim preface prêts protecting woman",
+            "torture poet lover fearless spoke papas",
+            "roll different reproduce collin golf criticism",
+            "assisté empty chapelle walker jeanne kate reformed",
+            "reformed flow christmas lantern amaranté adelaide suggests",
+            "rose pulpit author dirt second dominican casino paganini",
+            "base monastery europe recommended going bologna year near end"
+    })
+    private String test_phrase;
 
-    private static final String TEST_PHRASE = "reëntering"; // Frase de prueba
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
@@ -32,9 +41,9 @@ public class BencharkQueryEngine1 {
     @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
     @Fork(1)
-    @Threads(4) // Número de hilos para simular peticiones concurrentes
+    @Threads(4)
     public Map<String, Object> benchmarkSearchWords() {
-        // Llamada directa al método searchWords del controlador
-        return bookController.searchWords(TEST_PHRASE);
+
+        return bookController.searchWords(test_phrase);
     }
 }

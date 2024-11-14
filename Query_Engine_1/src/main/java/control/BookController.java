@@ -25,17 +25,13 @@ public class BookController {
         Map<String, Object> response = new HashMap<>();
         List<Map<String, Object>> wordResults = new ArrayList<>();
 
-        // Instancia de QueryEngineOneFile para realizar las búsquedas
         QueryEngineOneFile app = new QueryEngineOneFile();
 
-        // Divide la frase en palabras
         String[] words = phrase.split(" ");
 
-        // Crea un ExecutorService con un número de hilos igual al número de procesadores disponibles
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<Future<Map<String, Object>>> futures = new ArrayList<>();
 
-        // Crea una tarea para cada palabra y envía al ExecutorService
         for (String word : words) {
             Future<Map<String, Object>> future = executorService.submit(() -> {
                 Set<Word> wordsDatamart = app.readFile(WORDS_DATAMART_PATH);
@@ -44,7 +40,6 @@ public class BookController {
             futures.add(future);
         }
 
-        // Recoge los resultados de cada tarea
         for (Future<Map<String, Object>> future : futures) {
             try {
                 wordResults.add(future.get());  // Obtiene el resultado de cada tarea
@@ -57,7 +52,6 @@ public class BookController {
             }
         }
 
-        // Cierra el ExecutorService
         executorService.shutdown();
 
         response.put("results", wordResults);
