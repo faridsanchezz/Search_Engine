@@ -1,5 +1,4 @@
 package interfaces;
-
 import java.nio.file.Path;
 
 public interface Downloader {

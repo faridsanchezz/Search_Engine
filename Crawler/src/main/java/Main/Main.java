@@ -9,8 +9,8 @@ import java.io.IOException;
 public class Main {
 
 	public static void main(String[] args) {
-		String datalakePath = "";
-		int numBooks = 1;
+		String datalakePath = "/Users/nestoruniversidad/Desktop/test";
+		int numBooks = 5;
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
 		CrawlerController controller = new WebCrawlerController(downloader);

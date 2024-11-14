@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LanguageFilter implements Filter {
-
 	@Override
 	public boolean applyFilter(String content) {
 		Pattern languagePattern = Pattern.compile("(?i)Language\\s*:\\s*(\\w+)", Pattern.MULTILINE);
