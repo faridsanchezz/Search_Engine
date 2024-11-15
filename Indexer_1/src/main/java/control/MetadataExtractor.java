@@ -25,19 +25,18 @@ public class MetadataExtractor implements ExtractorController<Metadata> {
 		Pattern titlePattern = Pattern.compile("Title:\\s*(.*?)(?=\\n|$)");
 		Pattern authorPattern = Pattern.compile("Author:\\s*(.*?)(?=\\n|$)");
 		Pattern languagePattern = Pattern.compile("Language:\\s*(.*?)(?=\\n|$)");
-		Pattern releaseDatePattern = Pattern.compile("Release date:\\s*(.*?)(?=\\n|$)");
+		Pattern yearPattern = Pattern.compile("Release date:.*?(\\b\\d{4}\\b)");
 
 		Matcher titleMatcher = titlePattern.matcher(inputString);
 		Matcher authorMatcher = authorPattern.matcher(inputString);
 		Matcher languageMatcher = languagePattern.matcher(inputString);
-		Matcher releaseDateMatcher = releaseDatePattern.matcher(inputString);
+		Matcher yearMatcher = yearPattern.matcher(inputString);
 
 		String title = titleMatcher.find() ? titleMatcher.group(1).trim() : "UNKNOWN";
 		String author = authorMatcher.find() ? authorMatcher.group(1).trim() : "UNKNOWN";
 		String language = languageMatcher.find() ? languageMatcher.group(1).trim() : "UNKNOWN";
-		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : "UNKNOWN"; //TODO: add to metadata class
+		String year = yearMatcher.find() ? yearMatcher.group(1).trim() : "UNKNOWN";
 		String downloadLink = "https://www.gutenberg.org/cache/epub/" + bookID + "/pg" + bookID + ".txt";
-		String year = "2024";
 
 		Metadata metadata = new Metadata(bookID, title, author, year, language, downloadLink);
 

@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class Metadata {
 
-	private final String bookId;
+	private final String bookID;
 	private final String name;
 	private final String author;
-	private final int year;
+	private final String year;
 	private final String language;
 	private final String downloadLink;
 
-	public Metadata(String bookId, String name, String author, int year, String language, String downloadLink) {
-		this.bookId = bookId;
+	public Metadata(String bookID, String name, String author, String year, String language, String downloadLink) {
+		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
 		this.year = year;
@@ -20,8 +20,8 @@ public class Metadata {
 		this.downloadLink = downloadLink;
 	}
 
-	public String getBookId() {
-		return bookId;
+	public String getBookID() {
+		return bookID;
 	}
 
 	public String getName() {
@@ -32,7 +32,7 @@ public class Metadata {
 		return author;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
@@ -46,12 +46,17 @@ public class Metadata {
 
 	@Override
 	public String toString() {
-		return bookId + "\n" +
+		return bookID + "\n" +
 				"    " + name + "\n" +
 				"    " + author + "\n" +
-				"    " + year + "\n" +
-				"    " + language + "\n" +
-				"    " + downloadLink + "\n";
+				"   " + year + "\n" +
+				"   " + language + "\n" +
+				"   " + downloadLink + "\n";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(bookID);
 	}
 
 	@Override
@@ -59,6 +64,7 @@ public class Metadata {
 		if (this == obj) return true;
 		if (obj == null || getClass() != obj.getClass()) return false;
 		Metadata other = (Metadata) obj;
-		return Objects.equals(bookId, other.bookId);
+		return Objects.equals(bookID, other.bookID);
 	}
+
 }

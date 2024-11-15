@@ -19,7 +19,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 	@Override
 	public Set<Word> readFile(String filePath) {
 		Set<Word> wordSet = new HashSet<>();
-		Pattern linePattern = Pattern.compile("-\\s([\\w\\d]+\\.txt)\\s([\\d\\s]+)");
+		Pattern linePattern = Pattern.compile("-\\s([\\w\\d])\\s([\\d\\s]+)");
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
@@ -122,10 +122,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 		wordResult.put("word", word);
 
 		// Load metadata
-		Map<String, Metadata> metadataDict = new HashMap<>();
-		for (Metadata metadata : readMetadata(metadataFilePath)) {
-			metadataDict.put(metadata.getBookId(), metadata);
-		}
+		Set<Metadata> metadataSet = readMetadata(metadataFilePath);
 
 		// Search for the word occurrences
 		Word result = searchBook(wordsDatamart, word);
@@ -133,7 +130,11 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 		List<Map<String, Object>> occurrencesList = new ArrayList<>();
 		for (Word.WordOccurrence occurrence : result.getOccurrences()) {
 			String idBook = occurrence.getBook_id();
-			Metadata metadata = metadataDict.get(idBook);
+
+			Metadata metadata = metadataSet.stream()
+					.filter(m -> Objects.equals(m.getBookID(), idBook))
+					.findFirst()
+					.orElse(null);
 
 			// Prepare occurrence details
 			Map<String, Object> occurrenceDetails = new HashMap<>();

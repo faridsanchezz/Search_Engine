@@ -1,58 +1,43 @@
 package control;
 
-
 import model.Word;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
-@RestController
 public class BookController {
 
-	private static final String WORDS_DATAMART_PATH = "datamart\\words";
-	private static final String DATALAKE_PATH = "datalake\\";
-	private static final String METADATA_FILE_PATH = "datamart\\metadata";
+	private static final String WORDS_DATAMART_PATH = "datamart/words.txt";
+	private static final String DATALAKE_PATH = "datalake/";
+	private static final String METADATA_FILE_PATH = "datamart/metadata.txt";
 
-	@GetMapping("/search")
-	public Map<String, Object> searchWords(@RequestParam String phrase) {
+	private final QueryEngineOneFile app;
+
+	public BookController() {
+		this.app = new QueryEngineOneFile(); // Inicializar el motor de búsqueda
+	}
+
+	public Map<String, Object> searchWords(String phrase) {
 		Map<String, Object> response = new HashMap<>();
-		List<Map<String, Object>> wordResults = new ArrayList<>();
 
-		QueryEngineOneFile app = new QueryEngineOneFile();
+		// Dividir la frase en palabras y procesarlas en paralelo
+		List<Map<String, Object>> wordResults = Arrays.stream(phrase.split(" "))
+				.parallel() // Procesar cada palabra en paralelo
+				.map(word -> {
+					try {
+						Set<Word> wordsDatamart = app.readFile(WORDS_DATAMART_PATH);
+						return app.printResultsAsMap(wordsDatamart, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
+					} catch (Exception e) {
+						// En caso de error, devolver un mapa con el mensaje de error
+						Map<String, Object> errorResult = new HashMap<>();
+						errorResult.put("error", "Error processing word");
+						errorResult.put("details", e.getMessage());
+						return errorResult;
+					}
+				})
+				.collect(Collectors.toList()); // Recolectar los resultados en una lista
 
-		String[] words = phrase.split(" ");
-
-		ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		List<Future<Map<String, Object>>> futures = new ArrayList<>();
-
-		for (String word : words) {
-			Future<Map<String, Object>> future = executorService.submit(() -> {
-				Set<Word> wordsDatamart = app.readFile(WORDS_DATAMART_PATH);
-				return app.printResultsAsMap(wordsDatamart, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
-			});
-			futures.add(future);
-		}
-
-		for (Future<Map<String, Object>> future : futures) {
-			try {
-				wordResults.add(future.get());  // Obtiene el resultado de cada tarea
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-				Map<String, Object> errorResult = new HashMap<>();
-				errorResult.put("error", "Error processing word");
-				errorResult.put("details", e.getMessage());
-				wordResults.add(errorResult);
-			}
-		}
-
-		executorService.shutdown();
-
+		// Agregar los resultados al objeto de respuesta
 		response.put("results", wordResults);
 		return response;
 	}
