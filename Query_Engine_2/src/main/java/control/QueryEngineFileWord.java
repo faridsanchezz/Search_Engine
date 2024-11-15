@@ -21,19 +21,23 @@ public class QueryEngineFileWord implements QueryEngineManager{
 
         if (!wordFile.exists()) {
             System.out.println("\n" + "No file found for the word: " + word);
-            return new Word(word, new Word.WordOccurrence[0]);  // Devuelve un Word vacío si el archivo no existe
+            return new Word(word, new Word.WordOccurrence[0]); // Devuelve un Word vacío si el archivo no existe
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(wordFile))) {
             // Usamos Stream para procesar cada línea y mapearla a una lista de WordOccurrence
             List<Word.WordOccurrence> occurrences = reader.lines()
-                    .map(line -> line.split(" "))
-                    .filter(parts -> parts.length > 1)
+                    .map(line -> line.split(" ")) // Divide la línea en partes
+                    .filter(parts -> parts.length > 1) // Filtra líneas válidas con al menos un ID de línea
                     .map(parts -> {
-                        String bookId = String.valueOf(Integer.parseInt(parts[0]));
+                        // El ID del libro es el primer elemento (una string terminada en .txt)
+                        String bookId = parts[0];
+
+                        // Los números de línea comienzan desde el índice 1
                         List<Integer> lineNumbers = Arrays.stream(parts, 1, parts.length)
                                 .map(Integer::parseInt)
                                 .collect(Collectors.toList());
+
                         return new Word.WordOccurrence(bookId, lineNumbers);
                     })
                     .collect(Collectors.toList());
@@ -42,15 +46,16 @@ public class QueryEngineFileWord implements QueryEngineManager{
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new Word(word, new Word.WordOccurrence[0]);  // Devuelve un Word vacío en caso de error
+            return new Word(word, new Word.WordOccurrence[0]); // Devuelve un Word vacío en caso de error
         }
     }
+
 
 
     @Override
     public List<String> getPreviewLines(String datalakePath, String idBook, List<Integer> lines) {
         List<String> previewLines = new ArrayList<>();
-        String bookPath = datalakePath + File.separator + idBook + ".txt";
+        String bookPath = datalakePath + File.separator + idBook;
         File file = new File(bookPath);
         String startPattern = "\\*\\*\\* START .* \\*\\*\\*";
         boolean startReading = false;

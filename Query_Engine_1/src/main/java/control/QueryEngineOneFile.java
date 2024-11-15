@@ -14,30 +14,34 @@ import static control.MetadataReader.readMetadata;
 public class QueryEngineOneFile implements QueryEngineManager, FileManager{
 
     @Override
-    public  Set<Word> readFile(String filePath) {
+    public Set<Word> readFile(String filePath) {
         Set<Word> wordSet = new HashSet<>();
-        Pattern linePattern = Pattern.compile("-\\s(\\d+)\\s([\\d\\s]+)");
+        Pattern linePattern = Pattern.compile("-\\s([\\w\\d]+\\.txt)\\s([\\d\\s]+)");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             Word currentWord = null;
 
             while ((line = reader.readLine()) != null) {
-                // Check if the line is a word (not starting with '-')
+                // Check if the line is a word (doesn't start with '-')
                 if (!line.startsWith("-")) {
+                    // Add the previous word to the set
                     if (currentWord != null) {
                         wordSet.add(currentWord);
                     }
+                    // Create a new Word instance for the current word
                     currentWord = new Word(line.trim(), new ArrayList<>());
                 } else if (currentWord != null) {
                     // If the line starts with '-' and we have a current word, parse occurrences
                     Matcher matcher = linePattern.matcher(line.trim());
                     if (matcher.matches()) {
-                        String bookId = matcher.group(1);
+                        String bookId = matcher.group(1); // Extract the book ID
                         List<Integer> lineOccurrences = new ArrayList<>();
+                        // Parse line numbers
                         for (String part : matcher.group(2).split("\\s")) {
                             lineOccurrences.add(Integer.parseInt(part));
                         }
+                        // Add occurrence to the current word
                         Word.WordOccurrence occurrence = new Word.WordOccurrence(bookId, lineOccurrences);
                         currentWord.addOccurrence(occurrence);
                     }
@@ -55,6 +59,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager{
         return wordSet;
     }
 
+
     @Override
     public Word searchBook(Set<Word> wordsDatamart, String word) {
         return wordsDatamart.stream()
@@ -66,7 +71,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager{
     @Override
     public List<String> getPreviewLines(String datalakePath, String idBook, List<Integer> lines) {
         List<String> previewLines = new ArrayList<>();
-        String bookPath = datalakePath + File.separator + idBook + ".txt";
+        String bookPath = datalakePath + File.separator + idBook;
         File file = new File(bookPath);
         String startPattern = "\\*\\*\\* START .* \\*\\*\\*";
         boolean startReading = false;

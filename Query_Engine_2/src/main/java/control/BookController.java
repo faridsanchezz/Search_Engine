@@ -18,9 +18,9 @@ import java.util.concurrent.Future;
 @RestController
 public class BookController {
 
-    private static final String WORDS_DATAMART_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datamart\\Words";
-    private static final String DATALAKE_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datalake";
-    private static final String METADATA_FILE_PATH = "C:\\Users\\lucia\\IdeaProjects\\Search_Engine\\Query_Engine_2\\Datamart\\Metadatos\\metada";
+    private static final String WORDS_DATAMART_PATH = "datamart\\words";
+    private static final String DATALAKE_PATH = "datalake\\";
+    private static final String METADATA_FILE_PATH = "datamart\\metadata\\metadata";
 
 
     @GetMapping("/search")

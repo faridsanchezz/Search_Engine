@@ -14,20 +14,19 @@ public class MetadataReader {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Read each field based on the provided format
-                String bookId = line.trim();
-                String name = reader.readLine().trim();
-                String author = reader.readLine().trim();
-                int year = Integer.parseInt(reader.readLine().trim());
-                String language = reader.readLine().trim();
-                String downloadLink = reader.readLine().trim();
+                // Check if the line ends with ".txt" to identify the start of a new record
+                if (line.trim().endsWith(".txt")) {
+                    String bookId = line.trim(); // Book ID
+                    String name = reader.readLine().trim(); // Book name
+                    String author = reader.readLine().trim(); // Author
+                    int year = Integer.parseInt(reader.readLine().trim()); // Year
+                    String language = reader.readLine().trim(); // Language
+                    String downloadLink = reader.readLine().trim(); // Download link
 
-                // Create a Metadata object and add it to the list
-                Metadata metadata = new Metadata(bookId, name, author, year, language, downloadLink);
-                metadataList.add(metadata);
-
-                // Skip the blank line between records (if there is any)
-                reader.readLine();
+                    // Create a Metadata object and add it to the list
+                    Metadata metadata = new Metadata(bookId, name, author, year, language, downloadLink);
+                    metadataList.add(metadata);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error reading metadata file: " + e.getMessage());
