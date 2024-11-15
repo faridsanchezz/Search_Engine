@@ -27,7 +27,7 @@ public class WebCrawlerController implements CrawlerController {
 			boolean success = downloader.download(bookId, urlString, datalakePath);
 			if (success) {
 				booksDownloaded++;
-				System.out.println("Libros descargados: " + booksDownloaded);
+				System.out.println("Books downloaded: " + booksDownloaded);
 			}
 			Thread.sleep(500);
 		}

@@ -38,13 +38,13 @@ public class BookDownloader implements Downloader {
 				try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
 					writer.write(content);
 				}
-				System.out.println("Archivo descargado y guardado en 'datalake' como '" + bookId);
+				System.out.println("Book downloaded and saved in 'datalake' as '" + bookId);
 				return true;
 			} else {
-				System.out.println("Error al descargar el archivo " + bookId + ". Código de estado: " + responseCode);
+				System.out.println("Error downloading book " + bookId + ". Code state: " + responseCode);
 			}
 		} catch (IOException e) {
-			System.out.println("Error al conectar con la URL " + urlString + ": " + e.getMessage());
+			System.out.println("Error connecting with URL " + urlString + ": " + e.getMessage());
 		}
 		return false;
 	}
