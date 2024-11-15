@@ -29,11 +29,13 @@ public class BookDownloader implements Downloader {
 					System.out.println("Error. Book " + bookId + " not in English, Spanish, or French.");
 					return false;
 				}
-				Path filePath = datalakePath.resolve(bookId + ".txt");
+
+				Path filePath = datalakePath.resolve(String.valueOf(bookId));
+
 				try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
 					writer.write(content);
 				}
-				System.out.println("Archivo descargado y guardado en 'datalake' como '" + bookId + ".txt'");
+				System.out.println("Archivo descargado y guardado en 'datalake' como '" + bookId);
 				return true;
 			} else {
 				System.out.println("Error al descargar el archivo " + bookId + ". Código de estado: " + responseCode);
