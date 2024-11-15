@@ -33,7 +33,9 @@ public class Main {
 
 
 
+
 /*
+
 		// Indexer V2: Optimized
 		SerializerController<Word.WordOccurrence> wordSerializerV2 = new WordSerializerV2();
 		WordStoreManager<Word> wordStoreManagerV2 = new WordStoreManagerV2(datamartDirectory, wordSerializerV2);
@@ -43,6 +45,8 @@ public class Main {
 		eventsWatcher.run();
 
  */
+
+
 
 	}
 }

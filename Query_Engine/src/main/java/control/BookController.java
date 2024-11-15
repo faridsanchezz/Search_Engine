@@ -6,14 +6,17 @@ import java.util.stream.Collectors;
 public class BookController {
 
 	// TODO: RENOMBRAR TODOS LAS VARIABLES Y CLASES
-	private static final String WORDS_DATAMART_PATH = "datamart/words/";
-	private static final String DATALAKE_PATH = "datalake/";
-	private static final String METADATA_FILE_PATH = "datamart/metadata/metadata";
+	private  String WORDS_DATAMART_PATH;
+	private  String DATALAKE_PATH;
+	private  String METADATA_FILE_PATH;
 
-	private final QueryEngineFileWord app;
+	private  QueryEngineManager queryEngine;
 
-	public BookController() {
-		this.app = new QueryEngineFileWord();
+	public BookController(String WORDS_DATAMART_PATH, String DATALAKE_PATH, String METADATA_FILE_PATH, QueryEngineManager queryEngine) {
+		this.WORDS_DATAMART_PATH = WORDS_DATAMART_PATH;
+		this.DATALAKE_PATH = DATALAKE_PATH;
+		this.METADATA_FILE_PATH = METADATA_FILE_PATH;
+		this.queryEngine = queryEngine;
 	}
 
 	public Map<String, Object> searchWords(String phrase) {
@@ -23,7 +26,7 @@ public class BookController {
 				.parallel()
 				.map(word -> {
 					try {
-						return app.printResultsAsMap(WORDS_DATAMART_PATH, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
+						return queryEngine.printResultsAsMap(WORDS_DATAMART_PATH, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
 					} catch (Exception e) {
 						Map<String, Object> errorResult = new HashMap<>();
 						errorResult.put("error", "Error processing word");

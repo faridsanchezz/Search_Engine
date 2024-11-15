@@ -11,11 +11,23 @@ public class ApiServer {
 	private static final Gson gson = new Gson();
 
 	public static void main(String[] args) {
-		// Configurar el puerto del servidor
+
 		port(8080);
 
-		// Instancia de BookController
-		BookController bookController = new BookController();
+		String WORDS_DATAMART_PATH_FileWord = "datamart/words/";
+		String DATALAKE_PATH_FileWord = "datalake/";
+		String METADATA_FILE_PATH_FileWord = "datamart/metadata/metadata";
+
+		String WORDS_DATAMART_PATH_OneFile = "datamart/words";
+		String DATALAKE_PATH_OneFile = "datalake/";
+		String METADATA_FILE_PATH_OneFile = "datamart/metadata";
+
+		QueryEngineFileWord queryEngineFileWord = new QueryEngineFileWord();
+		QueryEngineOneFile queryEngineOneFile = new QueryEngineOneFile();
+
+
+		//BookController bookController = new BookController(WORDS_DATAMART_PATH_FileWord,DATALAKE_PATH_FileWord,  METADATA_FILE_PATH_FileWord,  queryEngineFileWord);
+		BookController bookController = new BookController(WORDS_DATAMART_PATH_OneFile,DATALAKE_PATH_OneFile,  METADATA_FILE_PATH_OneFile,  queryEngineOneFile);
 
 		// Definir la ruta de búsqueda GET
 		get("/search", (req, res) -> {
