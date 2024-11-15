@@ -8,7 +8,7 @@ public class BookController {
 	// TODO: RENOMBRAR TODOS LAS VARIABLES Y CLASES
 	private static final String WORDS_DATAMART_PATH = "datamart/words/";
 	private static final String DATALAKE_PATH = "datalake/";
-	private static final String METADATA_FILE_PATH = "datamart/metadata/metadata.txt";
+	private static final String METADATA_FILE_PATH = "datamart/metadata/metadata";
 
 	private final QueryEngineFileWord app;
 

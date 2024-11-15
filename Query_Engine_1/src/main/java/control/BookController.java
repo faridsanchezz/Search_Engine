@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 public class BookController {
 
-	private static final String WORDS_DATAMART_PATH = "datamart/words.txt";
+	private static final String WORDS_DATAMART_PATH = "datamart/words";
 	private static final String DATALAKE_PATH = "datalake/";
-	private static final String METADATA_FILE_PATH = "datamart/metadata.txt";
+	private static final String METADATA_FILE_PATH = "datamart/metadata";
 
 	private final QueryEngineOneFile app;
 
@@ -25,8 +25,7 @@ public class BookController {
 				.parallel() // Procesar cada palabra en paralelo
 				.map(word -> {
 					try {
-						Set<Word> wordsDatamart = app.readFile(WORDS_DATAMART_PATH);
-						return app.printResultsAsMap(wordsDatamart, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
+						return app.printResultsAsMap(WORDS_DATAMART_PATH, DATALAKE_PATH, METADATA_FILE_PATH, word.trim());
 					} catch (Exception e) {
 						// En caso de error, devolver un mapa con el mensaje de error
 						Map<String, Object> errorResult = new HashMap<>();

@@ -30,9 +30,7 @@ public class QueryEngineFileWord implements QueryEngineManager {
 					.map(line -> line.split(" ")) // Divide la línea en partes
 					.filter(parts -> parts.length > 1) // Filtra líneas válidas con al menos un ID de línea
 					.map(parts -> {
-						// El ID del libro es el primer elemento (una string terminada en .txt)
 						String bookId = parts[0];
-
 						// Los números de línea comienzan desde el índice 1
 						List<Integer> lineNumbers = Arrays.stream(parts, 1, parts.length)
 								.map(Integer::parseInt)
@@ -100,11 +98,7 @@ public class QueryEngineFileWord implements QueryEngineManager {
 		Map<String, Object> wordResult = new HashMap<>();
 		wordResult.put("word", word);
 
-		// Load metadata
-		Map<String, Metadata> metadataDict = new HashMap<>();
-		for (Metadata metadata : readMetadata(metadataFilePath)) {
-			metadataDict.put(metadata.getBook_id(), metadata);
-		}
+		Set<Metadata> metadataSet = readMetadata(metadataFilePath);
 
 		// Search for the word occurrences
 		Word result = searchBook(wordsDatamartPath, word);
@@ -112,7 +106,11 @@ public class QueryEngineFileWord implements QueryEngineManager {
 		List<Map<String, Object>> occurrencesList = new ArrayList<>();
 		for (Word.WordOccurrence occurrence : result.getOccurrences()) {
 			String idBook = occurrence.getBook_id();
-			Metadata metadata = metadataDict.get(idBook);
+
+			Metadata metadata = metadataSet.stream()
+					.filter(m -> Objects.equals(m.getBookID(), idBook))
+					.findFirst()
+					.orElse(null);
 
 			// Prepare occurrence details
 			Map<String, Object> occurrenceDetails = new HashMap<>();

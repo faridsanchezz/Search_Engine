@@ -19,13 +19,15 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 	@Override
 	public Set<Word> readFile(String filePath) {
 		Set<Word> wordSet = new HashSet<>();
-		Pattern linePattern = Pattern.compile("-\\s([\\w\\d])\\s([\\d\\s]+)");
+		Pattern linePattern = Pattern.compile("-\\s(\\d+)\\s((\\d+\\s?)+)");
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
 			Word currentWord = null;
 
 			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+
 				// Check if the line is a word (doesn't start with '-')
 				if (!line.startsWith("-")) {
 					// Add the previous word to the set
@@ -33,23 +35,26 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 						wordSet.add(currentWord);
 					}
 					// Create a new Word instance for the current word
-					currentWord = new Word(line.trim(), new ArrayList<>());
+					currentWord = new Word(line, new ArrayList<>());
 				} else if (currentWord != null) {
 					// If the line starts with '-' and we have a current word, parse occurrences
-					Matcher matcher = linePattern.matcher(line.trim());
+					Matcher matcher = linePattern.matcher(line);
 					if (matcher.matches()) {
 						String bookId = matcher.group(1); // Extract the book ID
 						List<Integer> lineOccurrences = new ArrayList<>();
 						// Parse line numbers
-						for (String part : matcher.group(2).split("\\s")) {
+						for (String part : matcher.group(2).trim().split("\\s+")) {
 							lineOccurrences.add(Integer.parseInt(part));
 						}
 						// Add occurrence to the current word
 						Word.WordOccurrence occurrence = new Word.WordOccurrence(bookId, lineOccurrences);
 						currentWord.addOccurrence(occurrence);
+					} else {
+						System.out.println("Line doesn't match expected format: " + line);
 					}
 				}
 			}
+
 			// Add the last word processed to the set
 			if (currentWord != null) {
 				wordSet.add(currentWord);
@@ -64,7 +69,8 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 
 
 	@Override
-	public Word searchBook(Set<Word> wordsDatamart, String word) {
+	public Word searchBook(String filePath, String word) {
+		Set<Word> wordsDatamart = readFile(filePath);
 		return wordsDatamart.stream()
 				.filter(w -> w.getText().equals(word))
 				.findFirst()
@@ -117,7 +123,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 
 
 	@Override
-	public Map<String, Object> printResultsAsMap(Set<Word> wordsDatamart, String datalakePath, String metadataFilePath, String word) {
+	public Map<String, Object> printResultsAsMap(String filePath, String datalakePath, String metadataFilePath, String word) {
 		Map<String, Object> wordResult = new HashMap<>();
 		wordResult.put("word", word);
 
@@ -125,7 +131,7 @@ public class QueryEngineOneFile implements QueryEngineManager, FileManager {
 		Set<Metadata> metadataSet = readMetadata(metadataFilePath);
 
 		// Search for the word occurrences
-		Word result = searchBook(wordsDatamart, word);
+		Word result = searchBook(filePath, word);
 
 		List<Map<String, Object>> occurrencesList = new ArrayList<>();
 		for (Word.WordOccurrence occurrence : result.getOccurrences()) {
