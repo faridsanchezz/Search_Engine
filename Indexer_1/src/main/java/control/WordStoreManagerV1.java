@@ -1,7 +1,7 @@
 package control;
 
 import control.interfaces.SerializerController;
-import control.interfaces.StoreManager;
+import control.interfaces.WordStoreManager;
 import model.Word;
 
 import java.io.File;
@@ -10,30 +10,31 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordStoreManagerV1 implements StoreManager<Word> {
+public class WordStoreManagerV1 implements WordStoreManager<Word> {
 	private final SerializerController<Word> wordSerializer;
-	private Set<Word> datamartSetWords;
-	private final String datamartFilePath;
+	private final File datamartFilePath;
 
 
 	public WordStoreManagerV1(String datamartDirectory, SerializerController<Word> wordSerializer) throws IOException {
 		this.wordSerializer = wordSerializer;
-		this.datamartFilePath = Paths.get(datamartDirectory, "words.txt").toString();
+		this.datamartFilePath = new File(datamartDirectory, "words");
 	}
 
 	@Override
-	public void update(Word new_word) throws IOException {
-		this.datamartSetWords = wordSerializer.deserialize(this.datamartFilePath);
-		Word targetWord = datamartSetWords.stream()
-				.filter(w -> w.hashCode() == new_word.hashCode())
-				.findFirst()
-				.orElse(null);
-		if (targetWord != null) {
-			targetWord.addOccurrence(new_word.getOccurrences());
-		} else {
-			datamartSetWords.add(new_word);
-		}
+	public void update(Set<Word> new_word_set) throws IOException {
+		Set<Word> datamartSetWords = wordSerializer.deserialize(this.datamartFilePath);
 
-		wordSerializer.serialize(this.datamartFilePath, this.datamartSetWords);
+		for(Word new_word: new_word_set) {
+			Word targetWord = datamartSetWords.stream()
+					.filter(w -> w.hashCode() == new_word.hashCode())
+					.findFirst()
+					.orElse(null);
+			if (targetWord != null) {
+				targetWord.addOccurrence(new_word.getOccurrences());
+			} else {
+				datamartSetWords.add(new_word);
+			}
+		}
+		wordSerializer.serialize(this.datamartFilePath, datamartSetWords);
 	}
 }

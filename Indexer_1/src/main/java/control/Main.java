@@ -1,12 +1,12 @@
 package control;
-import control.interfaces.ExtractorController;
-import control.interfaces.SerializerController;
-import control.interfaces.StoreManager;
-import control.interfaces.WordCleaner;
+import control.interfaces.*;
 import model.Metadata;
 import model.Word;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ForkJoinPool;
+
 
 public class Main {
 	public static void main(String[] args) throws IOException {
@@ -14,22 +14,33 @@ public class Main {
 		String datamartDirectory = "";
 		String datalakeDirectory = "";
 
-		DirectoryManager.createDirectory(datamartDirectory);
-
-		SerializerController<Word.WordOccurrence> wordSerializer = new WordSerializerV2();
-		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
-
-		StoreManager<Word> wordStoreManager = new WordStoreManagerV2(datamartDirectory, wordSerializer);
-		StoreManager<Metadata> metadataStoreManager = new MetadataStoreManagerV2(datamartDirectory, metadataSerializer);
+		DirectoryManager.createDirectory(new File(datamartDirectory));
+		DirectoryManager.createDirectory(new File(datalakeDirectory));
 
 		WordCleaner wordCleaner = new WordCleaner1();
 		ExtractorController<Metadata> metadataExtractor = new MetadataExtractor();
 		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
+		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
 
-		IndexerV1 indexerV1 = new IndexerV1(wordStoreManager, metadataStoreManager, metadataExtractor, wordExtractor);
 
+		/*
+		// Indexer V1
+		SerializerController<Word> wordSerializerV1 = new WordSerializerV1();
+		WordStoreManager<Word> wordStoreManagerV1 = new WordStoreManagerV1(datamartDirectory, wordSerializerV1);
+		MetadataStoreManager<Metadata> metadataStoreManagerV1 = new MetadataStoreManagerV1(datamartDirectory, metadataSerializer);
+		Indexer indexerV1 = new Indexer(wordStoreManagerV1, metadataStoreManagerV1, metadataExtractor, wordExtractor);
 		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerV1);
-		eventsWatcher.startMonitoring();
+		eventsWatcher.run();
 
+		 */
+
+
+		// Indexer V2: Optimized
+		SerializerController<Word.WordOccurrence> wordSerializerV2 = new WordSerializerV2();
+		WordStoreManager<Word> wordStoreManagerV2 = new WordStoreManagerV2(datamartDirectory, wordSerializerV2);
+		MetadataStoreManager<Metadata> metadataStoreManagerV2 = new MetadataStoreManagerV2(datamartDirectory, metadataSerializer);
+		Indexer indexerV2 = new Indexer(wordStoreManagerV2, metadataStoreManagerV2, metadataExtractor, wordExtractor);
+		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerV2);
+		eventsWatcher.run();
 	}
 }

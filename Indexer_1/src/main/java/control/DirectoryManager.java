@@ -1,12 +1,13 @@
 package control;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 
 public class DirectoryManager {
 
-	public static void createDirectory(String directory) {
-		Path directoryPath = Paths.get(directory);
+	public static void createDirectory(File directory) {
+		Path directoryPath = directory.toPath();
 		try {
 			if (Files.notExists(directoryPath)) {
 				Files.createDirectories(directoryPath);

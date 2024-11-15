@@ -1,27 +1,29 @@
 package control;
 
 import control.interfaces.ExtractorController;
-import control.interfaces.StoreManager;
+
+import control.interfaces.MetadataStoreManager;
+import control.interfaces.WordStoreManager;
 import model.Metadata;
 import model.Word;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Set;
 
 
-public class IndexerV1 {
+public class Indexer {
 
-	private final StoreManager<Word> wordStoreManager;
-	private final StoreManager<Metadata> metadataStoreManager;
+	private final WordStoreManager<Word> wordStoreManager;
+	private final MetadataStoreManager<Metadata> metadataStoreManager;
 	private final ExtractorController<Metadata> metadataExtractor;
 	private final ExtractorController<Word> wordExtractor;
 
 
-	public IndexerV1(StoreManager<Word> wordStoreManager, StoreManager<Metadata> metadataStoreManager, ExtractorController<Metadata> metadataExtractor, ExtractorController<Word> wordExtractor) throws IOException {
+	public Indexer(WordStoreManager<Word> wordStoreManager, MetadataStoreManager<Metadata> metadataStoreManager, ExtractorController<Metadata> metadataExtractor, ExtractorController<Word> wordExtractor) throws IOException {
 
 		this.wordStoreManager = wordStoreManager;
 		this.metadataStoreManager = metadataStoreManager;
@@ -39,10 +41,9 @@ public class IndexerV1 {
 			metadataStoreManager.update(metadataBook.iterator().next());
 			book.reset();
 			wordSet = wordExtractor.get(book, metadataBook.iterator().next().getBookID());
-			for (Word word : wordSet) {
-				wordStoreManager.update(word);
-			}
-			System.out.println("finish with exit");
+			wordStoreManager.update(wordSet);
+
+			System.out.println("---------------------finish a bokk------------------");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

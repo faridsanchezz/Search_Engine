@@ -3,16 +3,15 @@ package control;
 import java.io.IOException;
 import java.nio.file.*;
 
-public class EventsWatcher {
+public class EventsWatcher implements Runnable {
 
 	private final Path datalakeDirectory;
 	private final WatchService watchService;
-	private final IndexerV1 indexerV1;
+	private final Indexer indexer;
 
-	public EventsWatcher(String datalakeDirectory, IndexerV1 indexerV1) throws IOException {
+	public EventsWatcher(String datalakeDirectory, Indexer indexer) throws IOException {
 		this.datalakeDirectory = Paths.get(datalakeDirectory);
-		DirectoryManager.createDirectory(datalakeDirectory);
-		this.indexerV1 = indexerV1;
+		this.indexer = indexer;
 		this.watchService = FileSystems.getDefault().newWatchService();
 		this.datalakeDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 	}
@@ -41,8 +40,8 @@ public class EventsWatcher {
 				Path fileName = ev.context();
 				Path filePath = datalakeDirectory.resolve(fileName);
 
-				if (kind == StandardWatchEventKinds.ENTRY_CREATE && fileName.toString().endsWith(".txt")) {
-					System.out.println("New .txt file detected: " + filePath);
+				if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+					System.out.println("New book detected: " + filePath);
 					onTxtFileDetected(filePath);
 				}
 			}
@@ -56,11 +55,16 @@ public class EventsWatcher {
 	}
 
 	private void onTxtFileDetected(Path filePath) {
-		System.out.println("Processing the new .txt file: " + filePath);
+		System.out.println("Processing new book: " + filePath);
 		try {
-			indexerV1.execute(filePath);
+			indexer.execute(filePath);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void run() {
+		startMonitoring();
 	}
 }

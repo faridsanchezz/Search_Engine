@@ -14,20 +14,19 @@ public class WordSerializerV1 implements SerializerController<Word> {
 	}
 
 	@Override
-	public void serialize(String datamartFile,Set<Word> words) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(datamartFile, false))) {
-			for (Word word : words) {
-				writer.write(word.getText());
-				writer.newLine();
+	public void serialize(File datamartFile, Set<Word> new_words) {
 
-				for (Word.WordOccurrence occurrence : word.getOccurrences()) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(datamartFile, false))) {
+			for(Word new_word: new_words) {
+				writer.write(new_word.getText());
+				writer.newLine();
+				for (Word.WordOccurrence occurrence : new_word.getOccurrences()) {
 					writer.write("- " + occurrence.getBookID() + " ");
 					writer.write(String.join(" ", occurrence.getLineOccurrences().stream()
 							.map(String::valueOf)
 							.toArray(String[]::new)));
 					writer.newLine();
 				}
-				writer.newLine();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -35,7 +34,7 @@ public class WordSerializerV1 implements SerializerController<Word> {
 	}
 
 	@Override
-	public Set<Word> deserialize(String datamartFile) {
+	public Set<Word> deserialize(File datamartFile) {
 		Set<Word> words = new HashSet<>();
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(datamartFile))) {

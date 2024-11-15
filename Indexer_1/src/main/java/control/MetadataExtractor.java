@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class MetadataExtractor implements ExtractorController<Metadata> {
 
 	@Override
-	public Set<Metadata> get(BufferedReader book, String bookPath) throws IOException {
+	public Set<Metadata> get(BufferedReader book, String bookID) throws IOException {
 		StringBuilder inputString = new StringBuilder();
 
 		for (int i = 0; i < 30; i++) {
@@ -21,10 +21,6 @@ public class MetadataExtractor implements ExtractorController<Metadata> {
 			if (line == null) break;
 			inputString.append(line).append("\n");
 		}
-
-		Pattern idPattern = Pattern.compile("(\\d+)\\.txt$");
-		Matcher idMatcher = idPattern.matcher(bookPath);
-		String bookID = idMatcher.find() ? idMatcher.group(1) : null;
 
 		Pattern titlePattern = Pattern.compile("Title:\\s*(.*?)(?=\\n|$)");
 		Pattern authorPattern = Pattern.compile("Author:\\s*(.*?)(?=\\n|$)");
@@ -39,7 +35,7 @@ public class MetadataExtractor implements ExtractorController<Metadata> {
 		String title = titleMatcher.find() ? titleMatcher.group(1).trim() : null;
 		String author = authorMatcher.find() ? authorMatcher.group(1).trim() : null;
 		String language = languageMatcher.find() ? languageMatcher.group(1).trim() : null;
-		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : null;
+		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : null; //TODO: add to metadata class
 		String downloadLink = "https://www.gutenberg.org/cache/epub/" + bookID + "/pg" + bookID + ".txt";
 		String year = "2024";
 
