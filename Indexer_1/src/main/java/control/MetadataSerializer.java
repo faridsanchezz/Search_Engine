@@ -10,7 +10,7 @@ import java.util.Set;
 public class MetadataSerializer implements SerializerController<Metadata> {
 
 	@Override
-	public void serialize(File metadataDatamartFile,Set<Metadata> metadataSet) {
+	public void serialize(File metadataDatamartFile, Set<Metadata> metadataSet) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(metadataDatamartFile, false))) {
 			for (Metadata metadata : metadataSet) {
 				writer.write(metadata.getBookID());

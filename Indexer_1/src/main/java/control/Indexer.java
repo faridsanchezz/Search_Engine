@@ -1,14 +1,12 @@
 package control;
 
 import control.interfaces.ExtractorController;
-
 import control.interfaces.MetadataStoreManager;
 import control.interfaces.WordStoreManager;
 import model.Metadata;
 import model.Word;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,7 +41,7 @@ public class Indexer {
 			wordSet = wordExtractor.get(book, metadataBook.iterator().next().getBookID());
 			wordStoreManager.update(wordSet);
 
-			System.out.println("---------------------finish a bokk------------------");
+			System.out.println("------------------------- Finish indexing book ------------------------");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

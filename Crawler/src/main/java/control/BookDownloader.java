@@ -1,6 +1,8 @@
 package control;
+
 import interfaces.Downloader;
 import interfaces.Filter;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -11,6 +13,7 @@ import java.nio.file.Path;
 
 public class BookDownloader implements Downloader {
 	private final Filter languageFilter;
+
 	public BookDownloader(Filter languageFilter) {
 		this.languageFilter = languageFilter;
 	}

@@ -1,9 +1,12 @@
 package control;
+
 import interfaces.CrawlerController;
 import interfaces.Downloader;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Random;
+
 public class WebCrawlerController implements CrawlerController {
 	private final Downloader downloader;
 

@@ -6,8 +6,6 @@ import model.Word;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.Set;
 
 public class WordStoreManagerV1 implements WordStoreManager<Word> {
@@ -24,7 +22,7 @@ public class WordStoreManagerV1 implements WordStoreManager<Word> {
 	public void update(Set<Word> new_word_set) throws IOException {
 		Set<Word> datamartSetWords = wordSerializer.deserialize(this.datamartFilePath);
 
-		for(Word new_word: new_word_set) {
+		for (Word new_word : new_word_set) {
 			Word targetWord = datamartSetWords.stream()
 					.filter(w -> w.hashCode() == new_word.hashCode())
 					.findFirst()

@@ -1,10 +1,12 @@
 package Benchmark;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -28,6 +30,16 @@ public class ExecutionTimeComparisonChart extends JFrame {
 		setContentPane(chartPanel);
 	}
 
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			ExecutionTimeComparisonChart chart = new ExecutionTimeComparisonChart("Crawler Execution Time Comparison");
+			chart.setSize(800, 600);
+			chart.setLocationRelativeTo(null); // Center the frame on the screen
+			chart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			chart.setVisible(true);
+		});
+	}
+
 	private CategoryDataset createDataset() {
 		// Create a dataset for the comparison chart
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -46,15 +58,5 @@ public class ExecutionTimeComparisonChart extends JFrame {
 		dataset.addValue(114320.843, "Execution Time (Java)", "50");
 
 		return dataset;
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			ExecutionTimeComparisonChart chart = new ExecutionTimeComparisonChart("Crawler Execution Time Comparison");
-			chart.setSize(800, 600);
-			chart.setLocationRelativeTo(null); // Center the frame on the screen
-			chart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			chart.setVisible(true);
-		});
 	}
 }

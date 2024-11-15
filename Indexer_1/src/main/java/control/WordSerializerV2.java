@@ -4,7 +4,6 @@ import control.interfaces.SerializerController;
 import model.Word;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ public class WordSerializerV2 implements SerializerController<Word.WordOccurrenc
 
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(datamartFile, false))) {
 
-			for(Word.WordOccurrence ocurrence: occurrences){
+			for (Word.WordOccurrence ocurrence : occurrences) {
 				writer.write(ocurrence.getBookID() + " ");
 				writer.write(String.join(" ", ocurrence.getLineOccurrences().stream()
 						.map(String::valueOf)

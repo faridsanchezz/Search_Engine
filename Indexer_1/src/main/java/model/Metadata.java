@@ -1,6 +1,6 @@
 package model;
 
-import java.util.*;
+import java.util.Objects;
 
 public class Metadata {
 

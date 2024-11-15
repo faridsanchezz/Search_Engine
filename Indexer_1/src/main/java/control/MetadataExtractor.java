@@ -32,10 +32,10 @@ public class MetadataExtractor implements ExtractorController<Metadata> {
 		Matcher languageMatcher = languagePattern.matcher(inputString);
 		Matcher releaseDateMatcher = releaseDatePattern.matcher(inputString);
 
-		String title = titleMatcher.find() ? titleMatcher.group(1).trim() : null;
-		String author = authorMatcher.find() ? authorMatcher.group(1).trim() : null;
-		String language = languageMatcher.find() ? languageMatcher.group(1).trim() : null;
-		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : null; //TODO: add to metadata class
+		String title = titleMatcher.find() ? titleMatcher.group(1).trim() : "UNKNOWN";
+		String author = authorMatcher.find() ? authorMatcher.group(1).trim() : "UNKNOWN";
+		String language = languageMatcher.find() ? languageMatcher.group(1).trim() : "UNKNOWN";
+		String releaseDate = releaseDateMatcher.find() ? releaseDateMatcher.group(1).trim() : "UNKNOWN"; //TODO: add to metadata class
 		String downloadLink = "https://www.gutenberg.org/cache/epub/" + bookID + "/pg" + bookID + ".txt";
 		String year = "2024";
 

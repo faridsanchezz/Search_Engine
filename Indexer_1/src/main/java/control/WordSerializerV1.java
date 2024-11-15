@@ -17,7 +17,7 @@ public class WordSerializerV1 implements SerializerController<Word> {
 	public void serialize(File datamartFile, Set<Word> new_words) {
 
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(datamartFile, false))) {
-			for(Word new_word: new_words) {
+			for (Word new_word : new_words) {
 				writer.write(new_word.getText());
 				writer.newLine();
 				for (Word.WordOccurrence occurrence : new_word.getOccurrences()) {

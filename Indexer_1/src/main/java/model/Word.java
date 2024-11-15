@@ -1,7 +1,9 @@
 package model;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Word {
 	private String text;
@@ -28,6 +30,7 @@ public class Word {
 	public void addOccurrence(WordOccurrence newOccurrence) {
 		occurrences.add(newOccurrence);
 	}
+
 	public void addOccurrence(Set<WordOccurrence> newOccurrences) {
 		occurrences.addAll(newOccurrences);
 	}
@@ -79,6 +82,7 @@ public class Word {
 		public void addLineOccurrence(Integer line) {
 			this.lines.add(line);
 		}
+
 		public void addLineOccurrence(Set<Integer> lines) {
 			this.lines.addAll(lines);
 		}

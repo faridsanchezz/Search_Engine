@@ -1,11 +1,13 @@
 package Benchmark;
+
+import control.BookDownloader;
+import control.LanguageFilter;
+import control.WebCrawlerController;
 import interfaces.CrawlerController;
 import interfaces.Downloader;
 import interfaces.Filter;
-import control.WebCrawlerController;
-import control.BookDownloader;
-import control.LanguageFilter;
 import org.openjdk.jmh.annotations.*;
+
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
