@@ -1,0 +1,21 @@
+FROM openjdk:17-jdk-alpine
+
+
+WORKDIR /app
+
+
+COPY target/Indexer_1-1.0-SNAPSHOT.jar /app/indexer.jar
+
+
+ENV DATALAKE_PATH=/app/datalake/
+ENV DATAMART_PATH=/app/datamart/
+
+
+RUN mkdir -p /app/datalake /app/datamart
+
+
+VOLUME /app/datalake/
+VOLUME /app/datamart/
+
+
+ENTRYPOINT ["java", "-jar", "/app/indexer.jar"]

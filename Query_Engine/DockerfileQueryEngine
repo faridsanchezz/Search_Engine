@@ -1,0 +1,25 @@
+# Usa una imagen base de Java para ejecutar Spring Boot
+FROM openjdk:17-jdk-alpine
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el JAR de la aplicación en el contenedor
+COPY target/Query_Engine-1.0-SNAPSHOT.jar /app/query-engine.jar
+
+# Expone el puerto en el que corre la API (por defecto, 8080 en Spring Boot)
+EXPOSE 8080
+
+# Establece las variables de entorno para las rutas de datalake y datamart
+ENV DATALAKE_PATH=/app/datalake/
+ENV DATAMART_PATH=/app/datamart/
+
+# Crea los directorios para datalake y datamart
+RUN mkdir -p /app/datalake/ /app/datamart/
+
+# Expone los directorios como volúmenes para compartir datos con otros servicios
+VOLUME /app/datalake/
+VOLUME /app/datamart/
+
+# Comando para ejecutar el servicio Spring Boot
+ENTRYPOINT ["java", "-jar", "/app/query-engine.jar"]

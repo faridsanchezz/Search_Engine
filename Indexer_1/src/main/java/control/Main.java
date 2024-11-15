@@ -11,8 +11,8 @@ import java.io.IOException;
 public class Main {
 	public static void main(String[] args) throws IOException {
 
-		String datamartDirectory = "datamart\\";
-		String datalakeDirectory = "datalake\\";
+		String datamartDirectory = "/app/datamart/";
+		String datalakeDirectory = "/app/datalake/";
 
 		DirectoryManager.createDirectory(new File(datamartDirectory));
 		DirectoryManager.createDirectory(new File(datalakeDirectory));
@@ -22,7 +22,7 @@ public class Main {
 		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
 		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
 
-
+/*
 		// Indexer V1
 		SerializerController<Word> wordSerializerV1 = new WordSerializerV1();
 		WordStoreManager<Word> wordStoreManagerV1 = new WordStoreManagerV1(datamartDirectory, wordSerializerV1);
@@ -31,10 +31,12 @@ public class Main {
 		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerV1);
 		eventsWatcher.run();
 
+ */
 
 
 
-/*
+
+
 
 		// Indexer V2: Optimized
 		SerializerController<Word.WordOccurrence> wordSerializerV2 = new WordSerializerV2();
@@ -44,7 +46,7 @@ public class Main {
 		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerV2);
 		eventsWatcher.run();
 
- */
+
 
 
 

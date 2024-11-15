@@ -1,0 +1,16 @@
+FROM openjdk:17-jdk-alpine
+
+
+WORKDIR /app
+
+
+COPY target/Crawler-1.0-SNAPSHOT.jar /app/crawler.jar
+
+
+RUN mkdir -p /app/datalake/
+
+
+VOLUME /app/datalake/
+
+
+ENTRYPOINT ["java", "-jar", "/app/crawler.jar"]

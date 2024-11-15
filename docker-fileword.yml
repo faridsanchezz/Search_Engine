@@ -1,0 +1,59 @@
+services:
+  indexer:
+    build:
+      context: ./Indexer_1
+      dockerfile: DockerfileIndexer
+    image: myproject/indexerfileword
+    container_name: indexer
+    volumes:
+      - datalake:/app/datalake/
+      - datamart:/app/datamart/
+    environment:
+      - DATALAKE_PATH=/app/datalake/
+      - DATAMART_PATH=/app/datamart/
+
+  crawler:
+    build:
+      context: ./Crawler
+      dockerfile: DockerFileCrawler
+    image: myproject/crawler
+    container_name: crawler
+    depends_on:
+      - indexer
+    volumes:
+      - datalake:/app/datalake/
+    environment:
+      - JAVA_OPTS=-Xmx512m
+
+  query_engine:
+    build:
+      context: ./Query_Engine
+      dockerfile: DockerfileQueryEngine
+    image: myproject/query_enginefileword
+    container_name: query_engine
+    depends_on:
+      - crawler
+    volumes:
+      - datalake:/app/datalake/
+      - datamart:/app/datamart/
+    environment:
+      - DATALAKE_PATH=/app/datalake/
+      - DATAMART_PATH=/app/datamart/
+    ports:
+      - "8080:8080"  # Map local port for API access
+
+  user_interface:
+    build:
+      context: ./User_Interface
+      dockerfile: DockerfileUserInterface
+    image: myproject/user_interface
+    container_name: user_interface
+    depends_on:
+      - query_engine  # Asegura que query_engine esté ejecutándose antes de user_interface
+    ports:
+      - "3000:80"  # Mapea el puerto 80 del contenedor al puerto 3000 local
+
+
+volumes:
+  datalake:
+  datamart:

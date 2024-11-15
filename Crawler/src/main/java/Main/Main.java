@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Main {
 
 	public static void main(String[] args) {
-		String datalakePath = "datalake\\";
+		String datalakePath = "/app/datalake/";
 		int numBooks = 2;
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
