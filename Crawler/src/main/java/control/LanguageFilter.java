@@ -14,6 +14,7 @@ public class LanguageFilter implements Filter {
 		if (matcher.find()) {
 			String language = matcher.group(1).trim();
 			System.out.println("Detected language: " + language);
+
 			return !(language.equalsIgnoreCase("Spanish") || language.equalsIgnoreCase("English") || language.equalsIgnoreCase("French"));
 		} else {
 			System.out.println("No language field found.");

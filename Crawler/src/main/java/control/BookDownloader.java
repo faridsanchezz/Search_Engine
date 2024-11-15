@@ -13,7 +13,6 @@ import java.nio.file.Path;
 
 public class BookDownloader implements Downloader {
 	private final Filter languageFilter;
-
 	public BookDownloader(Filter languageFilter) {
 		this.languageFilter = languageFilter;
 	}
