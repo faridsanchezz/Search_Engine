@@ -1,8 +1,5 @@
 package control;
 
-import control.BookDownloader;
-import control.LanguageFilter;
-import control.WebCrawlerController;
 import control.interfaces.CrawlerController;
 import control.interfaces.Downloader;
 import control.interfaces.Filter;
@@ -16,7 +13,7 @@ public class Main {
 		// Paths for Docker
 		String datalakePath = "/app/datalake/";
 
-		int numBooks = 2;
+		int numBooks = 10;
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
 		CrawlerController controller = new WebCrawlerController(downloader);

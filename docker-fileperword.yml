@@ -3,7 +3,7 @@ services:
     build:
       context: ./Indexer_1
       dockerfile: DockerfileIndexer
-    image: myproject/indexerfileword
+    image: searchoracle/indexer_file_per_word
     container_name: indexer
     volumes:
       - datalake:/app/datalake/
@@ -16,7 +16,7 @@ services:
     build:
       context: ./Crawler
       dockerfile: DockerFileCrawler
-    image: myproject/crawler
+    image: searchoracle/crawler
     container_name: crawler
     depends_on:
       - indexer
@@ -29,7 +29,7 @@ services:
     build:
       context: ./Query_Engine
       dockerfile: DockerfileQueryEngine
-    image: myproject/query_enginefileword
+    image: searchoracle/query_engine_file_per_word
     container_name: query_engine
     depends_on:
       - crawler
@@ -46,7 +46,7 @@ services:
     build:
       context: ./User_Interface
       dockerfile: DockerfileUserInterface
-    image: myproject/user_interface
+    image: searchoracle/user_interface
     container_name: user_interface
     depends_on:
       - query_engine

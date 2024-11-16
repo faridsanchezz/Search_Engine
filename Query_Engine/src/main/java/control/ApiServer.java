@@ -28,8 +28,8 @@ public class ApiServer {
 		QueryEngineFilePerWord queryEngineFilePerWord = new QueryEngineFilePerWord();
 		QueryEngineOneFile queryEngineOneFile = new QueryEngineOneFile();
 
-		BookController bookController = new BookController(WORDS_DATAMART_PATH_OneFile, DATALAKE_PATH_OneFile, METADATA_FILE_PATH_OneFile, queryEngineOneFile);
-		//BookController bookController = new BookController(WORDS_DATAMART_PATH_FilePerWord, DATALAKE_PATH_FilePerWord, METADATA_FILE_PATH_FilePerWord, queryEngineFilePerWord);
+		//BookController bookController = new BookController(WORDS_DATAMART_PATH_OneFile, DATALAKE_PATH_OneFile, METADATA_FILE_PATH_OneFile, queryEngineOneFile);
+		BookController bookController = new BookController(WORDS_DATAMART_PATH_FilePerWord, DATALAKE_PATH_FilePerWord, METADATA_FILE_PATH_FilePerWord, queryEngineFilePerWord);
 
 		configureRoutes(bookController);
 	}

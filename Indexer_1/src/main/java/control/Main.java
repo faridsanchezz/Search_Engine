@@ -22,7 +22,7 @@ public class Main {
 		ExtractorController<Metadata> metadataExtractor = new MetadataExtractor();
 		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
 		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
-
+/*
 		// Indexer One File
 		SerializerController<Word> wordSerializerOneFile = new WordSerializerOneFile();
 		WordStoreManager<Word> wordStoreManagerOneFile = new WordStoreManagerOneFile(datamartDirectory, wordSerializerOneFile);
@@ -31,7 +31,9 @@ public class Main {
 		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerOneFile);
 		eventsWatcher.run();
 
-/*
+ */
+
+
 		// Indexer File Per Word
 		SerializerController<Word.WordOccurrence> wordSerializerFilePerWord = new WordSerializerFilePerWord();
 		WordStoreManager<Word> wordStoreManagerFilePerWord = new WordStoreManagerFilePerWord(datamartDirectory, wordSerializerFilePerWord);
@@ -40,7 +42,7 @@ public class Main {
 		EventsWatcher eventsWatcher = new EventsWatcher(datalakeDirectory, indexerFilePerWord);
 		eventsWatcher.run();
 
- */
+
 
 	}
 }
