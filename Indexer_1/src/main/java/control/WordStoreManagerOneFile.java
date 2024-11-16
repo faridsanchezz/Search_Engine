@@ -8,12 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-public class WordStoreManagerV1 implements WordStoreManager<Word> {
+public class WordStoreManagerOneFile implements WordStoreManager<Word> {
 	private final SerializerController<Word> wordSerializer;
 	private final File datamartFilePath;
 
 
-	public WordStoreManagerV1(String datamartDirectory, SerializerController<Word> wordSerializer) throws IOException {
+	public WordStoreManagerOneFile(String datamartDirectory, SerializerController<Word> wordSerializer) throws IOException {
 		this.wordSerializer = wordSerializer;
 		this.datamartFilePath = new File(datamartDirectory, "words");
 	}

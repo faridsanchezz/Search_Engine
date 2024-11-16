@@ -3,9 +3,9 @@ package Benchmark;
 import control.BookDownloader;
 import control.LanguageFilter;
 import control.WebCrawlerController;
-import interfaces.CrawlerController;
-import interfaces.Downloader;
-import interfaces.Filter;
+import control.interfaces.CrawlerController;
+import control.interfaces.Downloader;
+import control.interfaces.Filter;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
@@ -32,6 +32,6 @@ public class CrawlerTimeBenchmark {
 
 	@Benchmark
 	public void measureExecutionTime() throws Exception {
-		controller.execute(numBooks, "/Users/nestoruniversidad/Desktop/test");
+		controller.execute(numBooks, "/datalake");
 	}
 }

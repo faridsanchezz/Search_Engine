@@ -7,9 +7,9 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordSerializerV1 implements SerializerController<Word> {
+public class WordSerializerOneFile implements SerializerController<Word> {
 
-	public WordSerializerV1() {
+	public WordSerializerOneFile() {
 
 	}
 

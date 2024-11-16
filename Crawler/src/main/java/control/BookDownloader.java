@@ -1,7 +1,7 @@
 package control;
 
-import interfaces.Downloader;
-import interfaces.Filter;
+import control.interfaces.Downloader;
+import control.interfaces.Filter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

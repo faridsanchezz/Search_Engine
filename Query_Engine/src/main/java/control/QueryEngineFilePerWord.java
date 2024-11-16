@@ -1,5 +1,6 @@
 package control;
 
+import control.interfaces.QueryEngineManager;
 import model.Metadata;
 import model.Word;
 
@@ -14,24 +15,22 @@ import java.util.stream.Collectors;
 import static control.MetadataReader.readMetadata;
 
 
-public class QueryEngineFileWord implements QueryEngineManager {
+public class QueryEngineFilePerWord implements QueryEngineManager {
 	@Override
 	public Word searchBook(String wordsDatamartPath, String word) {
 		File wordFile = new File(wordsDatamartPath, word);
 
 		if (!wordFile.exists()) {
 			System.out.println("\n" + "No file found for the word: " + word);
-			return new Word(word, new Word.WordOccurrence[0]); // Devuelve un Word vacío si el archivo no existe
+			return new Word(word, new Word.WordOccurrence[0]);
 		}
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(wordFile))) {
-			// Usamos Stream para procesar cada línea y mapearla a una lista de WordOccurrence
 			List<Word.WordOccurrence> occurrences = reader.lines()
-					.map(line -> line.split(" ")) // Divide la línea en partes
-					.filter(parts -> parts.length > 1) // Filtra líneas válidas con al menos un ID de línea
+					.map(line -> line.split(" "))
+					.filter(parts -> parts.length > 1)
 					.map(parts -> {
 						String bookId = parts[0];
-						// Los números de línea comienzan desde el índice 1
 						List<Integer> lineNumbers = Arrays.stream(parts, 1, parts.length)
 								.map(Integer::parseInt)
 								.collect(Collectors.toList());
@@ -44,7 +43,7 @@ public class QueryEngineFileWord implements QueryEngineManager {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new Word(word, new Word.WordOccurrence[0]); // Devuelve un Word vacío en caso de error
+			return new Word(word, new Word.WordOccurrence[0]);
 		}
 	}
 
@@ -84,7 +83,7 @@ public class QueryEngineFileWord implements QueryEngineManager {
 							break;
 						}
 					}
-					lineNumber++; // Incrementa solo después de procesar la primera línea
+					lineNumber++;
 				}
 			}
 		} catch (IOException e) {
@@ -100,7 +99,6 @@ public class QueryEngineFileWord implements QueryEngineManager {
 
 		Set<Metadata> metadataSet = readMetadata(metadataFilePath);
 
-		// Search for the word occurrences
 		Word result = searchBook(wordsDatamartPath, word);
 
 		List<Map<String, Object>> occurrencesList = new ArrayList<>();
@@ -112,26 +110,22 @@ public class QueryEngineFileWord implements QueryEngineManager {
 					.findFirst()
 					.orElse(null);
 
-			// Prepare occurrence details
 			Map<String, Object> occurrenceDetails = new HashMap<>();
 			occurrenceDetails.put("book_id", idBook);
 			occurrenceDetails.put("frequency", occurrence.getFrequency());
 
-			// Convert lineNumbers to a string before adding to the map
 			String lineNumbersStr = occurrence.getLineOccurrences().stream()
 					.map(String::valueOf)
 					.collect(Collectors.joining(", "));
 			occurrenceDetails.put("lines", lineNumbersStr);
 
 			if (metadata != null) {
-				// Add metadata details
 				occurrenceDetails.put("title", metadata.getName());
 				occurrenceDetails.put("author", metadata.getAuthor());
 				occurrenceDetails.put("year", metadata.getYear());
 				occurrenceDetails.put("language", metadata.getLanguage());
 				occurrenceDetails.put("download_link", metadata.getDownloadLink());
 
-				// Get preview lines
 				List<String> previewLines = getPreviewLines(datalakePath, idBook, occurrence.getLineOccurrences());
 				occurrenceDetails.put("preview_lines", previewLines);
 			} else {

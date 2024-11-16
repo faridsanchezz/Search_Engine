@@ -10,7 +10,6 @@ import java.awt.*;
 public class BenchmarkChart {
 
 	public static void main(String[] args) {
-		// Datos para el gráfico
 		String[] labels = {"10 books", "50 books", "100 books", "200 books"};
 		int[] v1Times = {135, 305, 460, 958};
 		int[] v2Times = {30, 117, 247, 503};

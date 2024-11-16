@@ -133,7 +133,7 @@
     async function searchWords() {
         const phrase = document.getElementById('phrase').value.trim();
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Clear previous results
+        resultsDiv.innerHTML = '';
 
         if (!phrase) {
             resultsDiv.innerHTML = `<p class="error">Please enter a word or phrase to search.</p>`;

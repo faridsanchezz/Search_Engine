@@ -1,7 +1,7 @@
 package control;
 
-import interfaces.CrawlerController;
-import interfaces.Downloader;
+import control.interfaces.CrawlerController;
+import control.interfaces.Downloader;
 
 import java.io.IOException;
 import java.nio.file.Path;

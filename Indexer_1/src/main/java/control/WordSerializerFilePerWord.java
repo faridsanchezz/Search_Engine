@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordSerializerV2 implements SerializerController<Word.WordOccurrence> {
+public class WordSerializerFilePerWord implements SerializerController<Word.WordOccurrence> {
 
 	@Override
 	public void serialize(File datamartFile, Set<Word.WordOccurrence> occurrences) {

@@ -1,15 +1,12 @@
 package control;
 
-import control.interfaces.WordCleaner;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WordCleaner1 implements WordCleaner {
+public class WordCleaner implements control.interfaces.WordCleaner {
 
 	private final Set<String> stopwords = new HashSet<>(Arrays.asList(
-			// Stopwords in Spanish, English, and French
 			"el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "a", "al", "con", "sin", "por", "para",
 			"en", "entre", "sobre", "hasta", "ante", "bajo", "desde", "hacia", "durante", "mediante", "tras", "excepto",
 			"y", "o", "pero", "porque", "cuando", "donde", "qué", "quién", "cómo", "cuál", "quiénes", "que", "este",
@@ -26,7 +23,7 @@ public class WordCleaner1 implements WordCleaner {
 			"vous", "ils", "elles", "ll"
 	));
 
-	public WordCleaner1() {
+	public WordCleaner() {
 	}
 
 	@Override

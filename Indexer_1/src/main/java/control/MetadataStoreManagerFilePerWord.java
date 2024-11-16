@@ -6,15 +6,17 @@ import model.Metadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Set;
 
-public class MetadataStoreManagerV1 implements MetadataStoreManager<Metadata> {
+public class MetadataStoreManagerFilePerWord implements MetadataStoreManager<Metadata> {
 	private final File datamartFilePath;
 	private final SerializerController<Metadata> metadataSerializer;
 
-	public MetadataStoreManagerV1(String datamartDirectory, SerializerController<Metadata> metadataSerializer) throws IOException {
-		this.datamartFilePath = new File(datamartDirectory, "metadata");
+	public MetadataStoreManagerFilePerWord(String datamartDirectory, SerializerController<Metadata> metadataSerializer) throws IOException {
 		this.metadataSerializer = metadataSerializer;
+		DirectoryManager.createDirectory(Paths.get(datamartDirectory, "metadata").toFile());
+		this.datamartFilePath = Paths.get(datamartDirectory, "metadata", "metadata").toFile();
 	}
 
 	@Override
@@ -27,3 +29,4 @@ public class MetadataStoreManagerV1 implements MetadataStoreManager<Metadata> {
 		metadataSerializer.serialize(this.datamartFilePath, metadataSetDatamart);
 	}
 }
+

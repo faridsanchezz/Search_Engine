@@ -1,16 +1,17 @@
 package control;
 
+import control.interfaces.QueryEngineManager;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookController {
 
-	// TODO: RENOMBRAR TODOS LAS VARIABLES Y CLASES
 	private  String WORDS_DATAMART_PATH;
 	private  String DATALAKE_PATH;
 	private  String METADATA_FILE_PATH;
 
-	private  QueryEngineManager queryEngine;
+	private QueryEngineManager queryEngine;
 
 	public BookController(String WORDS_DATAMART_PATH, String DATALAKE_PATH, String METADATA_FILE_PATH, QueryEngineManager queryEngine) {
 		this.WORDS_DATAMART_PATH = WORDS_DATAMART_PATH;

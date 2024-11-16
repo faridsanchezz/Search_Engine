@@ -1,4 +1,5 @@
 import control.*;
+import control.WordCleaner;
 import control.interfaces.*;
 import model.Metadata;
 import model.Word;
@@ -14,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IndexerBenchmarkTest {
-
 	private static final String DATAMART_DIRECTORY = "datamart/";
 	private static final String DATALAKE_DIRECTORY = "datalake/";
 	private static final int[] BOOK_COUNTS = {10, 50, 100, 200};
@@ -97,26 +97,26 @@ public class IndexerBenchmarkTest {
 	}
 
 	private void runIndexerV1(int bookCount) throws IOException {
-		WordCleaner wordCleaner = new WordCleaner1();
+		control.interfaces.WordCleaner wordCleaner = new WordCleaner();
 		ExtractorController<Metadata> metadataExtractor = new MetadataExtractor();
 		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
 		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
-		SerializerController<Word> wordSerializerV1 = new WordSerializerV1();
-		WordStoreManager<Word> wordStoreManagerV1 = new WordStoreManagerV1(DATAMART_DIRECTORY, wordSerializerV1);
-		MetadataStoreManager<Metadata> metadataStoreManagerV1 = new MetadataStoreManagerV1(DATAMART_DIRECTORY, metadataSerializer);
+		SerializerController<Word> wordSerializerV1 = new WordSerializerOneFile();
+		WordStoreManager<Word> wordStoreManagerV1 = new WordStoreManagerOneFile(DATAMART_DIRECTORY, wordSerializerV1);
+		MetadataStoreManager<Metadata> metadataStoreManagerV1 = new MetadataStoreManagerOneFile(DATAMART_DIRECTORY, metadataSerializer);
 		Indexer indexerV1 = new Indexer(wordStoreManagerV1, metadataStoreManagerV1, metadataExtractor, wordExtractor);
 
 		processBooks(indexerV1, bookCount);
 	}
 
 	private void runIndexerV2(int bookCount) throws IOException {
-		WordCleaner wordCleaner = new WordCleaner1();
+		control.interfaces.WordCleaner wordCleaner = new WordCleaner();
 		ExtractorController<Metadata> metadataExtractor = new MetadataExtractor();
 		ExtractorController<Word> wordExtractor = new WordExtractor(wordCleaner);
 		SerializerController<Metadata> metadataSerializer = new MetadataSerializer();
-		SerializerController<Word.WordOccurrence> wordSerializerV2 = new WordSerializerV2();
-		WordStoreManager<Word> wordStoreManagerV2 = new WordStoreManagerV2(DATAMART_DIRECTORY, wordSerializerV2);
-		MetadataStoreManager<Metadata> metadataStoreManagerV2 = new MetadataStoreManagerV2(DATAMART_DIRECTORY, metadataSerializer);
+		SerializerController<Word.WordOccurrence> wordSerializerV2 = new WordSerializerFilePerWord();
+		WordStoreManager<Word> wordStoreManagerV2 = new WordStoreManagerFilePerWord(DATAMART_DIRECTORY, wordSerializerV2);
+		MetadataStoreManager<Metadata> metadataStoreManagerV2 = new MetadataStoreManagerFilePerWord(DATAMART_DIRECTORY, metadataSerializer);
 		Indexer indexerV2 = new Indexer(wordStoreManagerV2, metadataStoreManagerV2, metadataExtractor, wordExtractor);
 
 		processBooks(indexerV2, bookCount);

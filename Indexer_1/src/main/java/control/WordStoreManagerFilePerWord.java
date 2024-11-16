@@ -11,13 +11,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
-public class WordStoreManagerV2 implements WordStoreManager<Word> {
+public class WordStoreManagerFilePerWord implements WordStoreManager<Word> {
 	private final SerializerController<Word.WordOccurrence> wordSerializer;
 	private final File datamartDirectory;
 
 	private final Set<String> lockedDocuments = ConcurrentHashMap.newKeySet();
 
-	public WordStoreManagerV2(String datamartDirectory, SerializerController<Word.WordOccurrence> wordSerializer) throws IOException {
+	public WordStoreManagerFilePerWord(String datamartDirectory, SerializerController<Word.WordOccurrence> wordSerializer) throws IOException {
 		this.wordSerializer = wordSerializer;
 		this.datamartDirectory = Paths.get(datamartDirectory, "words").toFile();
 		DirectoryManager.createDirectory(this.datamartDirectory);

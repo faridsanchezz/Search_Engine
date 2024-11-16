@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>control.Main</mainClass> <!-- Cambia esto por tu clase principal -->
+                            <mainClass>control.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

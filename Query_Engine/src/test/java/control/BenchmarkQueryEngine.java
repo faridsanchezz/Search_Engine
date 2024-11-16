@@ -35,7 +35,7 @@ public class BenchmarkQueryEngine {
     String DATALAKE_PATH_OneFile = "datalake/";
     String METADATA_FILE_PATH_OneFile = "datamart/metadata";
 
-    QueryEngineFileWord queryEngineFileWord = new QueryEngineFileWord();
+    QueryEngineFilePerWord queryEngineFilePerWord = new QueryEngineFilePerWord();
     QueryEngineOneFile queryEngineOneFile = new QueryEngineOneFile();
 
 

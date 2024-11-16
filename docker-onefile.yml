@@ -40,7 +40,7 @@ services:
       - DATALAKE_PATH=/app/datalake/
       - DATAMART_PATH=/app/datamart/
     ports:
-      - "8080:8080"  # Map local port for API access
+      - "8080:8080"
 
   user_interface:
     build:
@@ -49,9 +49,9 @@ services:
     image: myproject/user_interface
     container_name: user_interface
     depends_on:
-      - query_engine  # Asegura que query_engine esté ejecutándose antes de user_interface
+      - query_engine
     ports:
-      - "3000:80"  # Mapea el puerto 80 del contenedor al puerto 3000 local
+      - "3000:80"
 
 
 volumes:

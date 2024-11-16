@@ -1,4 +1,4 @@
-package interfaces;
+package control.interfaces;
 
 import java.nio.file.Path;
 
